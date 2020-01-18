@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,35 +20,62 @@ import static my.project.rdp.other.Utils.rethrowVoid;
 
 public class SimpleClientTest {
 
-    public static void main(String[] args) throws IOException {
-        try (final SimpleServer server = SimpleServer.INSTANCE.start()) {
+    public static void main(String[] args) throws Exception {
+        // try (final SimpleServer server = SimpleServer.INSTANCE.start()) {
 
-            //Thread.sleep(2000);
-            final double k = 1;
-            final BufferedImage image = getImage(k);
+        //Thread.sleep(2000);
+        final double k = 1;
+        final BufferedImage image = getImage(k);
 
-            final int width = (int) (image.getWidth() / k);
-            final int height = (int) (image.getHeight() / k);
-            ImageIcon icon = new ImageIcon(resize(image, width, height));
-            JFrame frame = new JFrame();
-            frame.setLayout(new FlowLayout());
-            frame.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseMoved(MouseEvent e) {
-                    rethrowVoid(() ->
-                            SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
-                                    .ofInt(e.getX(), e.getY())))
-                    );
-                    super.mouseMoved(e);
-                }
-            });
+        final int width = (int) (image.getWidth() / k);
+        final int height = (int) (image.getHeight() / k);
+        ImageIcon icon = new ImageIcon(resize(image, width, height));
+        JFrame frame = new JFrame();
+        final FlowLayout manager = new FlowLayout();
 
-            frame.setSize(width, height);
-            JLabel lbl = new JLabel();
-            lbl.setIcon(icon);
-            frame.add(lbl);
-            frame.setVisible(true);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(manager);
+
+       // final JPanel panel = new JPanel(manager);
+       // panel.setPreferredSize(new Dimension(80, 75));
+        //panel.setBackground(Color.GRAY);
+       /* panel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                rethrowVoid(() ->
+                        SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
+                                .ofInt(e.getX(), e.getY())))
+                );
+                super.mouseMoved(e);
+            }
+        });*/
+
+        frame.setSize(width, height);
+        JLabel lbl = new JLabel();
+/*        frame.addMouseListener(new  MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                rethrowVoid(() ->
+                        SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
+                                .ofInt(e.getX(), e.getY())))
+                );
+                super.mouseMoved(e);
+            }
+        });*/
+        frame.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                rethrowVoid(() ->
+                        SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
+                                .ofInt(e.getX(), e.getY())))
+                );
+                super.mouseMoved(e);
+            }
+        });
+        lbl.setIcon(icon);
+        //panel.add(lbl);
+        frame.add(lbl);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
            /* frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
@@ -55,19 +83,19 @@ public class SimpleClientTest {
                     super.windowClosing(e);
                 }
             });*/
-            while (true) {
-                Thread.sleep(10);
-                final BufferedImage img = getImage(k);
-                icon.setImage(img);
-                lbl.repaint();
-            }
+        while (true) {
+            Thread.sleep(10);
+            final BufferedImage img = getImage(k);
+            icon.setImage(img);
+            lbl.repaint();
+        }
 
 
-        } catch (Exception e) {
+       /* } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             SimpleClient.INSTANCE.close();
-        }
+        }*/
 
 
     }
