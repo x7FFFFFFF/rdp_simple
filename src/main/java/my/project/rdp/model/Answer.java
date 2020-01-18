@@ -78,7 +78,9 @@ public class Answer implements Storable {
         command = Utils.getEnum(CommandRegistry.class, dis.readInt());
         length = dis.readInt();
         data = new byte[length];
-        dis.readFully(data);
+        for (int i = 0; i < length; i++) {
+            data[i]= dis.readByte();
+        }
     }
 
     @Override
@@ -86,7 +88,9 @@ public class Answer implements Storable {
         dos.writeByte(status);
         dos.writeInt(command.ordinal());
         dos.writeInt(length);
-        dos.write(data);
+        for (int i = 0; i < length; i++) {
+            dos.writeByte(data[i]);
+        }
     }
 
     public CommandRegistry getCommand() {
