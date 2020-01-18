@@ -47,7 +47,16 @@ public enum CommandRegistry implements CommandExecutor {
             pointSt.readObject(is);
             return pointSt;
         }
-    };
+
+    },
+    MOUSE_MOVE {
+        @Override
+        public Answer execute(Command command) throws Exception {
+            ScreenService.INSTANCE.mouseMove(new Point(command.getIntParam(0), command.getIntParam(1)));
+            return new Answer(1, command.getName());
+        }
+    }
+    ;
 
     private static Answer getAnswer(Command command, BufferedImage screenCapture) throws IOException {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

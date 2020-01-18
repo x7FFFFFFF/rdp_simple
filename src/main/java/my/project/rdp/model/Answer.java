@@ -24,6 +24,13 @@ public class Answer implements Storable {
         this.data = data;
     }
 
+    public Answer(int status,  CommandRegistry command) {
+        this.status = (byte) status;
+        this.command = command;
+        this.length = 0;
+        this.data = new byte[0];
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T getDataObj() throws Exception {
         return (T) command.decryptAnsver(data);

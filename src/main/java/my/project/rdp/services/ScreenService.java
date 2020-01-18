@@ -15,7 +15,11 @@ public enum  ScreenService {
         }
     }
 
-    public Point getMouse(){
+    public synchronized void  mouseMove(Point point) {
+        robot.mouseMove(point.x, point.y);
+    }
+
+    public synchronized Point getMouse(){
        return MouseInfo.getPointerInfo().getLocation();
     }
 

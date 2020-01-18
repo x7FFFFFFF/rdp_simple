@@ -9,9 +9,13 @@ import my.project.rdp.server.SimpleServer;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
+import static my.project.rdp.other.Utils.rethrowVoid;
 
 public class SimpleClientTest {
 
@@ -27,6 +31,16 @@ public class SimpleClientTest {
             ImageIcon icon = new ImageIcon(resize(image, width, height));
             JFrame frame = new JFrame();
             frame.setLayout(new FlowLayout());
+            frame.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    rethrowVoid(() ->
+                            SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
+                                    .ofInt(e.getX(), e.getY())))
+                    );
+                    super.mouseMoved(e);
+                }
+            });
 
             frame.setSize(width, height);
             JLabel lbl = new JLabel();
@@ -60,7 +74,7 @@ public class SimpleClientTest {
 
     private static BufferedImage getImage(double k) throws Exception {
         final Command command = new Command(CommandRegistry.CREATE_SCREEN_CAPTURE, Param
-                .ofInt(0, 0, 200, 200));
+                .ofInt(0, 0, 400, 400));
         final Answer answer = SimpleClient.INSTANCE.send(command);
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(answer.getData());
         final BufferedImage image = ImageIO.read(inputStream);
