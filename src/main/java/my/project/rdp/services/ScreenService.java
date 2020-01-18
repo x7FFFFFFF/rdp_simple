@@ -15,6 +15,10 @@ public enum  ScreenService {
         }
     }
 
+    public Point getMouse(){
+       return MouseInfo.getPointerInfo().getLocation();
+    }
+
     public synchronized BufferedImage createScreenCaptureFull() {
         //size of the screen
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

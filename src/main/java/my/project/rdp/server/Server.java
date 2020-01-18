@@ -25,7 +25,7 @@ public class Server {
 
 
 
-    public static void main(String[] args) throws Exception {
+    /*public static void main(String[] args) throws Exception {
         Selector selector = Selector.open();
         ServerSocketChannel serverSocket = ServerSocketChannel.open();
         serverSocket.bind(new InetSocketAddress("localhost", 1111));
@@ -47,9 +47,9 @@ public class Server {
                 iter.remove();
             }
         }
-    }
+    }*/
 
-    private static void readCommand(ByteBuffer buffer, SelectionKey key) throws Exception {
+    /*private static void readCommand(ByteBuffer buffer, SelectionKey key) throws Exception {
         SocketChannel client = (SocketChannel) key.channel();
         client.read(buffer);
         buffer.rewind();
@@ -71,7 +71,7 @@ public class Server {
             break;
         default:
             throw new IllegalArgumentException();
-        }
+        }*/
 
 
 
@@ -81,14 +81,14 @@ public class Server {
         }*/
        /* buffer.flip();
         client.write(buffer);
-        buffer.clear();*/
+        buffer.clear();
     }
 
     private static void register(Selector selector, ServerSocketChannel serverSocket) throws IOException {
         SocketChannel client = serverSocket.accept();
         client.configureBlocking(false);
         client.register(selector, SelectionKey.OP_READ);
-    }
+    }*/
 
 }
 

@@ -20,7 +20,7 @@ public class CommandTest {
         command1.readObject(byteBuffer);
         System.out.println("command1 = " + command1);*/
         //checkSerialization(command);
-        Utils.checkSerializationByteBuffer(command);
+        //Utils.checkSerializationByteBuffer(command);
         Utils.checkSerializationDataIO(command);
 
     }

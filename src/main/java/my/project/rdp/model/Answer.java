@@ -1,21 +1,32 @@
 package my.project.rdp.model;
 
+import my.project.rdp.other.Utils;
+import my.project.rdp.server.CommandRegistry;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Answer implements Storable {
     private byte status;
+    private CommandRegistry command;
     private int length;
     private byte[] data;
 
     public Answer() {
     }
 
-    public Answer(int status, byte[] data) {
+    public Answer(int status, CommandRegistry command, byte[] data) {
         this.status = (byte) status;
+        this.command = command;
         this.length = data.length;
         this.data = data;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getDataObj() throws Exception {
+        return (T) command.decryptAnsver(data);
     }
 
     public byte getStatus() {
@@ -35,7 +46,7 @@ public class Answer implements Storable {
     }
 
 
-    @Override
+ /*   @Override
     public void readObject(ByteBuffer buffer) throws Exception {
         status = buffer.get();
         length = buffer.getInt();
@@ -52,11 +63,12 @@ public class Answer implements Storable {
         for (int i = 0; i < length; i++) {
             buffer.put(data[i]);
         }
-    }
+    }*/
 
     @Override
     public void readObject(DataInput dis) throws Exception {
         status = dis.readByte();
+        command = Utils.getEnum(CommandRegistry.class, dis.readInt());
         length = dis.readInt();
         data = new byte[length];
         dis.readFully(data);
@@ -65,28 +77,33 @@ public class Answer implements Storable {
     @Override
     public void writeObject(DataOutput dos) throws Exception {
         dos.writeByte(status);
+        dos.writeInt(command.ordinal());
         dos.writeInt(length);
         dos.write(data);
     }
 
+    public CommandRegistry getCommand() {
+        return command;
+    }
+
+    public void setCommand(CommandRegistry command) {
+        this.command = command;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Answer answer = (Answer) o;
-        if (status != answer.status)
-            return false;
-        if (length != answer.length)
-            return false;
-        return Arrays.equals(data, answer.data);
+        return status == answer.status &&
+                length == answer.length &&
+                command == answer.command &&
+                Arrays.equals(data, answer.data);
     }
 
     @Override
     public int hashCode() {
-        int result = (int) status;
-        result = 31 * result + length;
+        int result = Objects.hash(status, command, length);
         result = 31 * result + Arrays.hashCode(data);
         return result;
     }

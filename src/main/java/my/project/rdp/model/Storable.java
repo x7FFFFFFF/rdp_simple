@@ -4,9 +4,13 @@ import java.io.*;
 import java.nio.ByteBuffer;
 
 public interface Storable {
-    void readObject(ByteBuffer dis) throws Exception;
+    default void readObject(ByteBuffer dis) throws Exception {
+        throw new UnsupportedOperationException();
+    }
 
-    void writeObject(ByteBuffer dos) throws Exception;
+    default  void writeObject(ByteBuffer dos) throws Exception {
+        throw new UnsupportedOperationException();
+    }
 
 
     void readObject(DataInput dis) throws Exception;

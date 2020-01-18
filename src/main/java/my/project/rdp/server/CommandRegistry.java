@@ -2,13 +2,13 @@ package my.project.rdp.server;
 
 import my.project.rdp.model.Answer;
 import my.project.rdp.model.Command;
+import my.project.rdp.model.PointSt;
 import my.project.rdp.services.ScreenService;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 public enum CommandRegistry implements CommandExecutor {
 
@@ -19,23 +19,40 @@ public enum CommandRegistry implements CommandExecutor {
             final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCapture(
                     new Rectangle(command.getIntParam(0), command.getIntParam(1), command.getIntParam(2),
                             command.getIntParam(3)));
-            return getAnswer(screenCapture);
+            return getAnswer(command, screenCapture);
         }
     },
-    CREATE_SCREEN_CAPTURE_FULL{
+    CREATE_SCREEN_CAPTURE_FULL {
         @Override
         public Answer execute(Command command) throws Exception {
             final BufferedImage screenCaptureFull = ScreenService.INSTANCE.createScreenCaptureFull();
-            return getAnswer(screenCaptureFull);
+            return getAnswer(command, screenCaptureFull);
         }
-    }
+    },
+    GET_MOUSE {
+        @Override
+        public Answer execute(Command command) throws Exception {
+            final Point mouse = ScreenService.INSTANCE.getMouse();
+            final PointSt pointSt = new PointSt(mouse);
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();  //TODO  - избыточно как то
+            DataOutput dos = new DataOutputStream(out);
+            pointSt.writeObject(dos);
+            return new Answer(1, command.getName(), out.toByteArray());
+        }
 
-    ;
+        @Override
+        public Object decryptAnsver(byte[] data) throws Exception { //TODO  - избыточно как то
+            final DataInputStream is = new DataInputStream(new ByteArrayInputStream(data));
+            final PointSt pointSt = new PointSt();
+            pointSt.readObject(is);
+            return pointSt;
+        }
+    };
 
-    private static Answer getAnswer(BufferedImage screenCapture) throws IOException {
+    private static Answer getAnswer(Command command, BufferedImage screenCapture) throws IOException {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(screenCapture, "JPEG", outputStream);
-        return new Answer(1, outputStream.toByteArray());
+        return new Answer(1, command.getName(), outputStream.toByteArray());
     }
 
 
