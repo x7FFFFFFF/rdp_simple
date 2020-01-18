@@ -15,6 +15,13 @@ public enum  ScreenService {
         }
     }
 
+    public synchronized BufferedImage createScreenCaptureFull() {
+        //size of the screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        return robot.createScreenCapture(new Rectangle(0,0, (int)screenSize.getWidth(), (int)screenSize.getHeight()));
+    }
+
+
 
     public synchronized BufferedImage createScreenCapture(Rectangle screenRect) {
         return robot.createScreenCapture(screenRect);

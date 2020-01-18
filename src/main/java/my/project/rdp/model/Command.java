@@ -2,6 +2,7 @@ package my.project.rdp.model;
 
 import my.project.rdp.other.Utils;
 import my.project.rdp.other.ConsumerWithEx;
+import my.project.rdp.server.CommandRegistry;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -9,24 +10,26 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class Command implements Storable {
-    private SupportedCommands name;
+    private CommandRegistry name;
     private byte length;
     private Param[] params;
 
-    public enum SupportedCommands {
-        CREATE_SCREEN_CAPTURE;
-    }
 
     public Command() {
     }
 
-    public Command(SupportedCommands name, Param[] params) {
+    public Command(CommandRegistry name, Param[] params) {
         this.name = name;
         this.length = (byte) params.length;
         this.params = params;
     }
 
-    public SupportedCommands getName() {
+    public Command(CommandRegistry  name) {
+        this.name = name;
+        this.params = new Param[0];
+    }
+
+    public CommandRegistry getName() {
         return name;
     }
 
@@ -46,7 +49,7 @@ public class Command implements Storable {
         return (String) param.getValue();
     }
 
-    public void setName(SupportedCommands name) {
+    public void setName(CommandRegistry name) {
         this.name = name;
     }
 
@@ -68,7 +71,7 @@ public class Command implements Storable {
 
     @Override
     public void readObject(ByteBuffer buffer) throws Exception {
-        name = Utils.getEnum(SupportedCommands.class, buffer.getInt());
+        name = Utils.getEnum(CommandRegistry.class, buffer.getInt());
         length = buffer.get();
         params = new Param[length];
         params = readParams(length, param -> param.readObject(buffer));
@@ -85,7 +88,7 @@ public class Command implements Storable {
 
     @Override
     public void readObject(DataInput dis) throws Exception {
-        name = Utils.getEnum(SupportedCommands.class, dis.readInt());
+        name = Utils.getEnum(CommandRegistry.class, dis.readInt());
         length = dis.readByte();
         params = readParams(length, param -> param.readObject(dis));
     }

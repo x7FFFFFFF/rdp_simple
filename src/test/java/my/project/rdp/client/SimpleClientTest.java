@@ -3,6 +3,7 @@ package my.project.rdp.client;
 import my.project.rdp.model.Answer;
 import my.project.rdp.model.Command;
 import my.project.rdp.model.Param;
+import my.project.rdp.server.CommandRegistry;
 import my.project.rdp.server.SimpleServer;
 
 import javax.imageio.ImageIO;
@@ -20,9 +21,7 @@ public class SimpleClientTest {
         try (final SimpleServer server = SimpleServer.INSTANCE.start()) {
 
             //Thread.sleep(2000);
-            final Command command = new Command(Command.SupportedCommands.CREATE_SCREEN_CAPTURE, Param
-                    .of(new Param(Param.SupportedTypes.INT, 0), new Param(Param.SupportedTypes.INT, 0),
-                            new Param(Param.SupportedTypes.INT, 100), new Param(Param.SupportedTypes.INT, 100)));
+            final Command command = new Command(CommandRegistry.CREATE_SCREEN_CAPTURE_FULL);
             final Answer answer = SimpleClient.INSTANCE.send(command);
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(answer.getData());
             final BufferedImage image = ImageIO.read(inputStream);

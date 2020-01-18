@@ -72,7 +72,7 @@ public enum SimpleServer implements AutoCloseable {
                 while (!Thread.currentThread().isInterrupted()) {
                     final Command command = new Command();
                     command.readObject(in);
-                    final Answer answer = processCommand(command);
+                    final Answer answer = CommandRegistry.exec(command);
                     answer.writeObject(out);
                 }
             } catch (Exception e) {
@@ -84,7 +84,7 @@ public enum SimpleServer implements AutoCloseable {
 
         }
 
-        private Answer processCommand(Command command) throws IOException {
+    /*    private Answer processCommand(Command command) throws IOException {
             switch (command.getName()) {
                 case CREATE_SCREEN_CAPTURE:
                     final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCapture(
@@ -96,7 +96,7 @@ public enum SimpleServer implements AutoCloseable {
                 default:
                     throw new IllegalArgumentException();
             }
-        }
+        }*/
 
     }
 

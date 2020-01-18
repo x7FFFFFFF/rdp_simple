@@ -3,6 +3,7 @@ package my.project.rdp.client;
 import my.project.rdp.model.Answer;
 import my.project.rdp.model.Command;
 import my.project.rdp.model.Param;
+import my.project.rdp.server.CommandRegistry;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -52,7 +53,7 @@ public enum Client {
     }
 
     public static void main(String[] args) throws Exception {
-        final Command command = new Command(Command.SupportedCommands.CREATE_SCREEN_CAPTURE, Param
+        final Command command = new Command(CommandRegistry.CREATE_SCREEN_CAPTURE, Param
             .of(new Param(Param.SupportedTypes.INT, 0), new Param(Param.SupportedTypes.INT, 0),
                 new Param(Param.SupportedTypes.INT, 100), new Param(Param.SupportedTypes.INT, 100)));
         final Answer answer = Client.INSTANCE.sendMessage(command);

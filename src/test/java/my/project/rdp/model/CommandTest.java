@@ -1,5 +1,6 @@
 package my.project.rdp.model;
 
+import my.project.rdp.server.CommandRegistry;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
@@ -9,7 +10,7 @@ import java.nio.ByteBuffer;
 public class CommandTest {
     @Test
     public void test() throws Exception {
-        final Command command = new Command(Command.SupportedCommands.CREATE_SCREEN_CAPTURE, Param
+        final Command command = new Command(CommandRegistry.CREATE_SCREEN_CAPTURE, Param
             .of(new Param(Param.SupportedTypes.INT, 0), new Param(Param.SupportedTypes.INT, 0),
                 new Param(Param.SupportedTypes.INT, 100), new Param(Param.SupportedTypes.INT, 100)));
  /*       final ByteBuffer byteBuffer = ByteBuffer.allocate(256);
