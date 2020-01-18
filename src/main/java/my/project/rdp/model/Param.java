@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static my.project.rdp.other.Utils.*;
 
@@ -137,6 +138,11 @@ public class Param implements Storable {
 
     public static Param[] of(Param... params) {
         return params;
+    }
+
+
+    public static Param[] ofInt(Integer... params) {
+        return Stream.of(params).map(i->new Param(SupportedTypes.INT, i)).toArray(Param[]::new);
     }
 
     @Override

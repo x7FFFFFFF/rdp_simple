@@ -2,6 +2,7 @@ package my.project.rdp.client;
 
 import my.project.rdp.model.Answer;
 import my.project.rdp.model.Command;
+import my.project.rdp.model.Param;
 import my.project.rdp.server.CommandRegistry;
 import my.project.rdp.server.SimpleServer;
 
@@ -18,7 +19,7 @@ public class SimpleClientTest {
         try (final SimpleServer server = SimpleServer.INSTANCE.start()) {
 
             //Thread.sleep(2000);
-            final double k = 2;
+            final double k = 1;
             final BufferedImage image = getImage(k);
 
             final int width = (int) (image.getWidth() / k);
@@ -58,7 +59,8 @@ public class SimpleClientTest {
     }
 
     private static BufferedImage getImage(double k) throws Exception {
-        final Command command = new Command(CommandRegistry.CREATE_SCREEN_CAPTURE_FULL);
+        final Command command = new Command(CommandRegistry.CREATE_SCREEN_CAPTURE, Param
+                .ofInt(0, 0, 200, 200));
         final Answer answer = SimpleClient.INSTANCE.send(command);
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(answer.getData());
         final BufferedImage image = ImageIO.read(inputStream);
@@ -70,7 +72,7 @@ public class SimpleClientTest {
         int x = (int) (point.x / k);
         int y = (int) (point.y / k);
         graphics.drawLine(x - 20, y, x + 20, y);
-        graphics.drawLine(x, y-20, x , y+20);
+        graphics.drawLine(x, y - 20, x, y + 20);
         return image;
     }
 
