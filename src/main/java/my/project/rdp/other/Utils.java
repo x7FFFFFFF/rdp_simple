@@ -1,4 +1,4 @@
-package my.project.rdp;
+package my.project.rdp.other;
 
 import my.project.rdp.model.Param;
 
@@ -36,4 +36,32 @@ public final class Utils {
             buffer.put(bytes[i]);
         }
     }
+
+
+    public static <T, V> V rethrow(T val, FunctionWithEx<T, V> func) {
+        try {
+            return func.apply(val);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static <T> T rethrow(SupplierWithEx<T> supl) {
+        try {
+            return supl.get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void rethrowVoid(SupplierVoidWithEx supl) {
+        try {
+            supl.doSmth();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

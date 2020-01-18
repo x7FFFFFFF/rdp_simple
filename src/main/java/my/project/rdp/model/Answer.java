@@ -55,6 +55,21 @@ public class Answer implements Storable {
     }
 
     @Override
+    public void readObject(DataInput dis) throws Exception {
+        status = dis.readByte();
+        length = dis.readInt();
+        data = new byte[length];
+        dis.readFully(data);
+    }
+
+    @Override
+    public void writeObject(DataOutput dos) throws Exception {
+        dos.writeByte(status);
+        dos.writeInt(length);
+        dos.write(data);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;

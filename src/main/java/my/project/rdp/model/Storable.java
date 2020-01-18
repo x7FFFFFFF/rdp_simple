@@ -7,4 +7,9 @@ public interface Storable {
     void readObject(ByteBuffer dis) throws Exception;
 
     void writeObject(ByteBuffer dos) throws Exception;
+
+
+    void readObject(DataInput dis) throws Exception;
+
+    void writeObject(DataOutput dos) throws Exception;
 }

@@ -1,7 +1,10 @@
 package my.project.rdp.model;
 
-import my.project.rdp.Utils;
+import my.project.rdp.other.Utils;
+import my.project.rdp.other.ConsumerWithEx;
 
+import java.io.DataInput;
+import java.io.DataOutput;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -68,11 +71,7 @@ public class Command implements Storable {
         name = Utils.getEnum(SupportedCommands.class, buffer.getInt());
         length = buffer.get();
         params = new Param[length];
-        for (int i = 0; i < params.length; i++) {
-            final Param param = new Param();
-            param.readObject(buffer);
-            params[i] = param;
-        }
+        params = readParams(length, param -> param.readObject(buffer));
     }
 
     @Override
@@ -81,6 +80,33 @@ public class Command implements Storable {
         buffer.put(length);
         for (Param param : params) {
             param.writeObject(buffer);
+        }
+    }
+
+    @Override
+    public void readObject(DataInput dis) throws Exception {
+        name = Utils.getEnum(SupportedCommands.class, dis.readInt());
+        length = dis.readByte();
+        params = readParams(length, param -> param.readObject(dis));
+    }
+
+
+    private static Param[] readParams(int length, ConsumerWithEx<Param> consusmer) throws Exception {
+        final Param[] params = new Param[length];
+        for (int i = 0; i < params.length; i++) {
+            final Param param = new Param();
+            consusmer.accept(param);
+            params[i] = param;
+        }
+        return params;
+    }
+
+    @Override
+    public void writeObject(DataOutput dos) throws Exception {
+        dos.writeInt(name.ordinal());
+        dos.writeByte(length);
+        for (Param param : params) {
+            param.writeObject(dos);
         }
     }
 
@@ -106,4 +132,7 @@ public class Command implements Storable {
         result = 31 * result + Arrays.hashCode(params);
         return result;
     }
+
+
+
 }
