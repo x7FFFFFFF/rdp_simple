@@ -3,6 +3,7 @@ package my.project.rdp.client;
 import my.project.rdp.model.Answer;
 import my.project.rdp.model.Command;
 import my.project.rdp.model.Param;
+import my.project.rdp.model.PointSt;
 import my.project.rdp.server.CommandRegistry;
 import my.project.rdp.server.SimpleServer;
 
@@ -15,10 +16,14 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import static my.project.rdp.other.Utils.rethrowVoid;
 
 public class SimpleClientTest {
+
+
+    private static ConcurrentLinkedDeque<Point> deque = new ConcurrentLinkedDeque<>(); //todo: point not immutable
 
     public static void main(String[] args) throws Exception {
         // try (final SimpleServer server = SimpleServer.INSTANCE.start()) {
@@ -35,8 +40,8 @@ public class SimpleClientTest {
 
         frame.setLayout(manager);
 
-       // final JPanel panel = new JPanel(manager);
-       // panel.setPreferredSize(new Dimension(80, 75));
+        // final JPanel panel = new JPanel(manager);
+        // panel.setPreferredSize(new Dimension(80, 75));
         //panel.setBackground(Color.GRAY);
        /* panel.addMouseListener(new MouseAdapter() {
             @Override
@@ -64,10 +69,12 @@ public class SimpleClientTest {
         frame.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
-                rethrowVoid(() ->
+
+                deque.offer(new Point(e.getX(), e.getY()));
+                /*rethrowVoid(() ->
                         SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
                                 .ofInt(e.getX(), e.getY())))
-                );
+                );*/
                 super.mouseMoved(e);
             }
         });
@@ -86,6 +93,26 @@ public class SimpleClientTest {
         while (true) {
             Thread.sleep(10);
             final BufferedImage img = getImage(k);
+
+            final Point mousePoint = deque.poll();
+            if (mousePoint != null) {
+                final Answer answer = SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
+                        .ofInt(mousePoint.x, mousePoint.y)));
+                Point point =answer.getDataObj();
+                System.out.println("point = " + point);
+                final Graphics graphics = image.getGraphics();
+                int x = (int) (point.x / k);
+                int y = (int) (point.y / k);
+                graphics.drawLine(x - 20, y, x + 20, y);
+                graphics.drawLine(x, y - 20, x, y + 20);
+            }
+
+
+           // final Answer mouse = SimpleClient.INSTANCE.send(new Command(CommandRegistry.GET_MOUSE));
+           // Point point = mouse.getDataObj();
+
+
+
             icon.setImage(img);
             lbl.repaint();
         }
@@ -102,19 +129,19 @@ public class SimpleClientTest {
 
     private static BufferedImage getImage(double k) throws Exception {
         final Command command = new Command(CommandRegistry.CREATE_SCREEN_CAPTURE, Param
-                .ofInt(0, 0, 400, 400));
+                .ofInt(0, 0, 800, 600));
         final Answer answer = SimpleClient.INSTANCE.send(command);
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(answer.getData());
         final BufferedImage image = ImageIO.read(inputStream);
 
-        final Answer mouse = SimpleClient.INSTANCE.send(new Command(CommandRegistry.GET_MOUSE));
+      /*  final Answer mouse = SimpleClient.INSTANCE.send(new Command(CommandRegistry.GET_MOUSE));
         Point point = mouse.getDataObj();
         System.out.println("point = " + point);
         final Graphics graphics = image.getGraphics();
         int x = (int) (point.x / k);
         int y = (int) (point.y / k);
         graphics.drawLine(x - 20, y, x + 20, y);
-        graphics.drawLine(x, y - 20, x, y + 20);
+        graphics.drawLine(x, y - 20, x, y + 20);*/
         return image;
     }
 
