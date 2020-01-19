@@ -109,4 +109,8 @@ public enum SimpleServer implements AutoCloseable {
         executor.shutdownNow();
         serverSocket.close();
     }
+
+    public static void main(String[] args) throws IOException {
+        SimpleServer.INSTANCE.start();
+    }
 }
