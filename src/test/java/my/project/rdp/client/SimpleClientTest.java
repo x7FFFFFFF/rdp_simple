@@ -92,13 +92,16 @@ public class SimpleClientTest {
             });*/
         while (true) {
             Thread.sleep(10);
-            final BufferedImage img = getImage(k);
+            //  final BufferedImage img = getImage(k);
 
             final Point mousePoint = deque.poll();
             if (mousePoint != null) {
                 final Answer answer = SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
                         .ofInt(mousePoint.x, mousePoint.y)));
-                Point point =answer.getDataObj();
+                if (answer == null) {
+                    continue;
+                }
+                Point point = answer.getDataObj();
                 System.out.println("point = " + point);
                 final Graphics graphics = image.getGraphics();
                 int x = (int) (point.x / k);
@@ -108,12 +111,11 @@ public class SimpleClientTest {
             }
 
 
-           // final Answer mouse = SimpleClient.INSTANCE.send(new Command(CommandRegistry.GET_MOUSE));
-           // Point point = mouse.getDataObj();
+            // final Answer mouse = SimpleClient.INSTANCE.send(new Command(CommandRegistry.GET_MOUSE));
+            // Point point = mouse.getDataObj();
 
 
-
-            icon.setImage(img);
+            icon.setImage(image);
             lbl.repaint();
         }
 
@@ -131,6 +133,9 @@ public class SimpleClientTest {
         final Command command = new Command(CommandRegistry.CREATE_SCREEN_CAPTURE, Param
                 .ofInt(0, 0, 800, 600));
         final Answer answer = SimpleClient.INSTANCE.send(command);
+        if (answer == null) {
+            return null;
+        }
         final ByteArrayInputStream inputStream = new ByteArrayInputStream(answer.getData());
         final BufferedImage image = ImageIO.read(inputStream);
 

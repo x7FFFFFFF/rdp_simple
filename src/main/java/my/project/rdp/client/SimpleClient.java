@@ -11,7 +11,7 @@ import static my.project.rdp.other.Utils.rethrow;
 import static my.project.rdp.other.Utils.rethrowVoid;
 
 public enum SimpleClient implements AutoCloseable {
-   INSTANCE("192.168.1.33", 1111);
+    INSTANCE("192.168.1.33", 1111);
     //INSTANCE("localhost", 1111);
     private final Socket clientSocket;
     private final DataOutputStream out;
@@ -25,15 +25,20 @@ public enum SimpleClient implements AutoCloseable {
     }
 
     public Answer send(Command command) throws Exception {
-        command.writeObject(out);
-        final Answer answer = new Answer();
-        answer.readObject(in);
-        return answer;
+        try {
+            command.writeObject(out);
+            final Answer answer = new Answer();
+            answer.readObject(in);
+            return answer;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public void close() {
-        rethrowVoid(()-> {
+        rethrowVoid(() -> {
             out.close();
             in.close();
             clientSocket.close();
