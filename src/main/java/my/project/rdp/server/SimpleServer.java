@@ -103,5 +103,6 @@ public enum SimpleServer implements AutoCloseable {
 
     public static void main(String[] args) throws IOException {
         SimpleServer.INSTANCE.start();
+        SimpleServer.MOUSE_SERVER.start();
     }
 }
