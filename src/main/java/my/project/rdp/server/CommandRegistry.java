@@ -52,7 +52,9 @@ public enum CommandRegistry implements CommandExecutor {
     MOUSE_MOVE {
         @Override
         public Answer execute(Command command) throws Exception {
-            ScreenService.INSTANCE.mouseMove(new Point(command.getIntParam(0), command.getIntParam(1)));
+            Point point = new Point(command.getIntParam(0), command.getIntParam(1));
+            ScreenService.INSTANCE.mouseMove(point);
+            System.out.println("MOUSE_MOVE = " + point);
             return GET_MOUSE.execute(command);
         }
 
