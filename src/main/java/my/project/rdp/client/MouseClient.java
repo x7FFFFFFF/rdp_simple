@@ -11,7 +11,7 @@ import static my.project.rdp.other.Utils.rethrow;
 import static my.project.rdp.other.Utils.rethrowVoid;
 
 public enum MouseClient implements AutoCloseable {
-    INSTANCE("localhost", 1112);
+    INSTANCE("192.168.1.33", 1112);
     //INSTANCE("localhost", 1111);
     private final Socket clientSocket;
     private final DataOutputStream out;

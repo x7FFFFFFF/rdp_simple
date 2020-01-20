@@ -75,6 +75,7 @@ public class SimpleClientTest {
                         SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
                                 .ofInt(e.getX(), e.getY())))
                 );*/
+                System.out.println("point = " + e.getX() +":"+ e.getY());
                 rethrowVoid(() -> MouseClient.INSTANCE.send(e.getX(), e.getY()));
                 super.mouseMoved(e);
             }

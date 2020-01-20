@@ -25,16 +25,13 @@ public class MouseHandler implements Runnable {
              final DataInputStream in = new DataInputStream(
                      new BufferedInputStream(clientSocket.getInputStream()))) {
             final int len = 4;
-            final byte[] val = new byte[len];
+            //final byte[] val = new byte[len];
             while (!Thread.currentThread().isInterrupted()) {
-                final int read = in.read(val, 0, len);
-                if (read != 4) { // TODO -1
-                    System.out.println("error. read count = " + read);
-                    continue;
-                }
-                final int x = (val[0] << 8) + (val[1] << 0);
-                final int y = (val[2] << 8) + (val[3] << 0);
-                //TODO:
+
+
+                final int x = in.readUnsignedShort();
+                final int y = in.readUnsignedShort();
+
                 final Point point = new Point(x, y);
                 System.out.println("point = " + point);
                 ScreenService.INSTANCE.mouseMove(point);
