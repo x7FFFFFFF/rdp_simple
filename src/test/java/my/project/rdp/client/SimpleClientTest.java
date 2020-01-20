@@ -70,11 +70,12 @@ public class SimpleClientTest {
             @Override
             public void mouseMoved(MouseEvent e) {
 
-                deque.offer(new Point(e.getX(), e.getY()));
+                //deque.offer(new Point(e.getX(), e.getY()));
                 /*rethrowVoid(() ->
                         SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
                                 .ofInt(e.getX(), e.getY())))
                 );*/
+                rethrowVoid(() -> MouseClient.INSTANCE.send(e.getX(), e.getY()));
                 super.mouseMoved(e);
             }
         });
@@ -94,7 +95,7 @@ public class SimpleClientTest {
             Thread.sleep(10);
             //  final BufferedImage img = getImage(k);
 
-            final Point mousePoint = deque.poll();
+            /*final Point mousePoint = deque.poll();
             if (mousePoint != null) {
                 final Answer answer = SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
                         .ofInt(mousePoint.x, mousePoint.y)));
@@ -108,7 +109,7 @@ public class SimpleClientTest {
                 int y = (int) (point.y / k);
                 graphics.drawLine(x - 20, y, x + 20, y);
                 graphics.drawLine(x, y - 20, x, y + 20);
-            }
+            }*/
 
 
             // final Answer mouse = SimpleClient.INSTANCE.send(new Command(CommandRegistry.GET_MOUSE));

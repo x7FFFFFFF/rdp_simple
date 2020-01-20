@@ -2,58 +2,63 @@ package my.project.rdp.server;
 
 import my.project.rdp.model.Answer;
 import my.project.rdp.model.Command;
-import my.project.rdp.services.ScreenService;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static my.project.rdp.other.Utils.rethrow;
 import static my.project.rdp.other.Utils.rethrowVoid;
 
 public enum SimpleServer implements AutoCloseable {
-    INSTANCE(1111);
+    INSTANCE(1111, ClientHandler.class),
+    MOUSE_SERVER(1112, MouseHandler.class);
     private final ServerSocket serverSocket;
+    private final Constructor<? extends Runnable> constructor;
     private final ExecutorService executor;
     private final List<Future> futureList = new ArrayList<>();
-    private final AtomicBoolean started  = new AtomicBoolean(false);
+    private final AtomicBoolean started = new AtomicBoolean(false);
 
-    SimpleServer(int port) {
-        serverSocket = rethrow(() -> new ServerSocket(port));
-        executor = Executors.newFixedThreadPool(2);
+    SimpleServer(int port, Class<? extends Runnable> clientHandlerClass) {
+        try {
+            constructor = clientHandlerClass.getConstructor(Socket.class);
+            serverSocket = new ServerSocket(port);
+            executor = Executors.newFixedThreadPool(2);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public SimpleServer start() throws IOException {
         System.out.print("Starting server");
         futureList.add(executor.submit(new ServerMain()));
-        while (!started.get()){
+        while (!started.get()) {
             System.out.print(".");
         }
         System.out.print("server started");
         return this;
     }
 
-    private class ServerMain implements Runnable {
+    private class ServerMain implements Callable<Void> {
 
         @Override
-        public void run() {
+        public Void call() throws Exception {
             started.set(true);
+
             while (!Thread.currentThread().isInterrupted()) {
-                rethrowVoid(() -> futureList.add(
-                        executor.submit(new ClientHandler(serverSocket.accept()))));
+                futureList.add(
+                        executor.submit(constructor.newInstance(serverSocket.accept())));
             }
+            return null;
         }
     }
 
@@ -83,20 +88,6 @@ public enum SimpleServer implements AutoCloseable {
 
 
         }
-
-    /*    private Answer processCommand(Command command) throws IOException {
-            switch (command.getName()) {
-                case CREATE_SCREEN_CAPTURE:
-                    final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCapture(
-                            new Rectangle(command.getIntParam(0), command.getIntParam(1), command.getIntParam(2),
-                                    command.getIntParam(3)));
-                    final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    ImageIO.write(screenCapture, "JPEG", outputStream);
-                    return new Answer(1, outputStream.toByteArray());
-                default:
-                    throw new IllegalArgumentException();
-            }
-        }*/
 
     }
 
