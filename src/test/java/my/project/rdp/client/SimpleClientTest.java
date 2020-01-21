@@ -34,39 +34,21 @@ public class SimpleClientTest {
 
         final int width = (int) (image.getWidth() / k);
         final int height = (int) (image.getHeight() / k);
-        ImageIcon icon = new ImageIcon(resize(image, width, height));
-        JFrame frame = new JFrame();
+        final Image img0 = resize(image, width, height);
+        final ImageIcon icon = new ImageIcon(img0);
+
+        final JFrame frame = new JFrame();
         final FlowLayout manager = new FlowLayout();
-
         frame.setLayout(manager);
-
-        // final JPanel panel = new JPanel(manager);
-        // panel.setPreferredSize(new Dimension(80, 75));
-        //panel.setBackground(Color.GRAY);
-       /* panel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                rethrowVoid(() ->
-                        SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
-                                .ofInt(e.getX(), e.getY())))
-                );
-                super.mouseMoved(e);
-            }
-        });*/
-
         frame.setSize(width, height);
+
+       // final JPanel panel  = new JPanel();
+
+
+
+
         JLabel lbl = new JLabel();
-/*        frame.addMouseListener(new  MouseAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                rethrowVoid(() ->
-                        SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
-                                .ofInt(e.getX(), e.getY())))
-                );
-                super.mouseMoved(e);
-            }
-        });*/
-        frame.addMouseMotionListener(new MouseMotionAdapter() {
+        lbl.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
 
@@ -85,16 +67,9 @@ public class SimpleClientTest {
         frame.add(lbl);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-           /* frame.addWindowListener(new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    SimpleClient.INSTANCE.close();
-                    super.windowClosing(e);
-                }
-            });*/
         while (true) {
             Thread.sleep(10);
-            //  final BufferedImage img = getImage(k);
+              final BufferedImage img = getImage(k);
 
             /*final Point mousePoint = deque.poll();
             if (mousePoint != null) {
@@ -117,7 +92,7 @@ public class SimpleClientTest {
             // Point point = mouse.getDataObj();
 
 
-            icon.setImage(image);
+            icon.setImage(img);
             lbl.repaint();
         }
 
