@@ -27,7 +27,7 @@ public class SimpleClientTest {
 
     public static void main(String[] args) throws Exception {
         // try (final SimpleServer server = SimpleServer.INSTANCE.start()) {
-        MouseClient.INSTANCE.start("localhost", 1112);
+        MouseClient.INSTANCE.start("192.168.1.33", 1112);
         //Thread.sleep(2000);
         final double k = 1;
         final BufferedImage image = getImage(k);
