@@ -5,6 +5,7 @@ import my.project.rdp.model.Param;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 public final class Utils {
     private Utils() {
@@ -17,6 +18,15 @@ public final class Utils {
             }
         }
         throw new IllegalArgumentException("" + val);
+    }
+
+    public static <E extends Enum<E>> Optional<E> getEnumOpt(Class<E> clz, int val) {
+        for (E value : clz.getEnumConstants()) {
+            if (value.ordinal() == val) {
+                return Optional.of(value);
+            }
+        }
+        return Optional.empty();
     }
 
     public static String readUTF(ByteBuffer buffer) throws IOException {
