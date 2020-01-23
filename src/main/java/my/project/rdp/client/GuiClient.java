@@ -135,7 +135,7 @@ public class GuiClient extends JPanel {
     public static void main(String[] args) throws IOException {
         final String host = getArg("host");
         SimpleClient.INSTANCE.start(host, getArgInt("p1"));
-        MouseClient.INSTANCE.start(host, getArgInt("p1"));
+        MouseClient.INSTANCE.start(host, getArgInt("p2"));
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(() -> Utils.rethrowVoid(GuiClient::createAndShowGUI));

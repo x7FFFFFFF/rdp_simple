@@ -28,8 +28,10 @@ public enum SimpleServer implements AutoCloseable {
     private final ExecutorService executor;
     private final List<Future> futureList = new ArrayList<>();
     private final AtomicBoolean started = new AtomicBoolean(false);
+    private final int port;
 
     SimpleServer(int port, Class<? extends Runnable> clientHandlerClass) {
+        this.port = port;
         try {
             constructor = clientHandlerClass.getConstructor(Socket.class);
             serverSocket = new ServerSocket(port);
@@ -40,7 +42,7 @@ public enum SimpleServer implements AutoCloseable {
     }
 
     public SimpleServer start() throws IOException {
-        System.out.print("Starting server");
+        System.out.print("Starting server port" + port);
         futureList.add(executor.submit(new ServerMain()));
         while (!started.get()) {
             System.out.print(".");
