@@ -34,6 +34,7 @@ public class MouseHandler implements Runnable {
                     System.out.println("Missed enumOpt = " + enumOpt);
                     continue;
                 }
+                System.out.println("MouseEvents = " + enumOpt.get());
                 enumOpt.get().handle(in);
                /* final int x = in.readUnsignedShort();
                 final int y = in.readUnsignedShort();

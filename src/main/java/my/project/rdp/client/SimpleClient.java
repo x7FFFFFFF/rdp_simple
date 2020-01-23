@@ -2,7 +2,9 @@ package my.project.rdp.client;
 
 import my.project.rdp.model.Answer;
 import my.project.rdp.model.Command;
+import my.project.rdp.server.MouseEvents;
 
+import java.awt.event.MouseEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -24,7 +26,8 @@ public enum SimpleClient implements AutoCloseable {
                 clientSocket.getInputStream()));
     }
 
-    public Answer send(Command command) throws Exception {
+
+    public synchronized Answer send(Command command) throws Exception {
         try {
             command.writeObject(out);
             final Answer answer = new Answer();

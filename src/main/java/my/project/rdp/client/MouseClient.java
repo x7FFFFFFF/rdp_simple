@@ -5,6 +5,7 @@ import my.project.rdp.model.Command;
 import my.project.rdp.server.MouseEvents;
 import my.project.rdp.server.SimpleServer;
 
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -39,14 +40,24 @@ public enum MouseClient implements AutoCloseable {
         return this;
     }
 
-    public void send(int x, int y) throws Exception {
+
+    public synchronized void send(MouseEvents mouseEvents, MouseEvent evt) {
+        try {
+            mouseEvents.send(out, evt);
+            out.flush();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+/*    public void send(int x, int y) throws Exception {
         try {
             MouseEvents.MOVE.send(out, x, y);
             out.flush();
         } catch (Exception e) {
             e.printStackTrace(); //todo
         }
-    }
+    }*/
 
     @Override
     public void close() {

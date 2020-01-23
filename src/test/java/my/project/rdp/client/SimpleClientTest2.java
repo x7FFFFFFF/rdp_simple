@@ -8,12 +8,13 @@ import my.project.rdp.server.SimpleServer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 
 public class SimpleClientTest2 {
 
-    public static void main1(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
         final int width = 500;
         final int height = 500;
@@ -26,15 +27,49 @@ public class SimpleClientTest2 {
                 frame.setSize(width, height);
         JLabel lbl = new JLabel();
 
-        frame.addMouseMotionListener(new MouseMotionAdapter() {
+        frame.addMouseListener(new MouseListener() {
             @Override
-            public void mouseMoved(MouseEvent e) {
-                System.out.println("x = " + e.getX() +" y = "+ e.getY());
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("point = " + e.paramString());
 
+            }
 
-                super.mouseMoved(e);
+            @Override
+            public void mousePressed(MouseEvent e) {
+                System.out.println("point = " + e.paramString());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                System.out.println("point = " + e.paramString());
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                System.out.println("point = " + e.paramString());
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                System.out.println("point = " + e.paramString());
             }
         });
+
+
+/*        frame.addMouseMotionListener(new MouseMotionAdapter() {
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                System.out.println("point = " + e.paramString());
+                super.mouseDragged(e);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                System.out.println("point = " + e.paramString());
+                super.mouseMoved(e);
+            }
+        });*/
        // lbl.setIcon(icon);
         //panel.add(lbl);
         frame.add(lbl);
@@ -45,8 +80,7 @@ public class SimpleClientTest2 {
     }
 
 
-    public static void main(String[] args) throws InterruptedException, AWTException {
-        final Robot robot = new Robot();
+    public static void main1(String[] args) throws InterruptedException {
         while (true) {
             System.out.println("args = " + args);
             final Point location = MouseInfo.getPointerInfo().getLocation();
