@@ -52,6 +52,7 @@ public class SimpleClientTest {
         lbl.addMouseListener(MouseEvents.mouseListener());
         lbl.addMouseMotionListener(MouseEvents.mouseMotionListener());
         lbl.addMouseWheelListener(MouseEvents.mouseWheelListener());
+        frame.addKeyListener(MouseEvents.keyListener());
         lbl.setIcon(icon);
         //panel.add(lbl);
         frame.add(lbl);
