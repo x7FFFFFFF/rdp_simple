@@ -24,9 +24,10 @@ public class MouseClientTest {
         frame.setSize(width, height);
         JLabel lbl = new JLabel();
 
-        frame.addMouseListener(MouseEvents.mouseListener());
-        frame.addMouseMotionListener(MouseEvents.mouseMotionListener());
-        frame.addMouseWheelListener(MouseEvents.mouseWheelListener());
+       // frame.addMouseListener(MouseEvents.mouseListener());
+       // frame.addMouseMotionListener(MouseEvents.mouseMotionListener());
+       // frame.addMouseWheelListener(MouseEvents.mouseWheelListener());
+        frame.addKeyListener(MouseEvents.keyListener());
 
         frame.add(lbl);
         frame.setVisible(true);

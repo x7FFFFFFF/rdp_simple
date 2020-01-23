@@ -49,5 +49,12 @@ public enum  ScreenService {
     }
 
 
+    public synchronized void keyPressed(int keyCode) {
+        robot.keyPress(keyCode);
+    }
+
+    public synchronized void keyRealeased(int keyCode) {
+        robot.keyRelease(keyCode);
+    }
 
 }

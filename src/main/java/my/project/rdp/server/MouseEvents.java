@@ -25,10 +25,11 @@ public enum MouseEvents implements Event {
         }
 
         @Override
-        public void send(DataOutput out, MouseEvent e) throws Exception {
+        public void send(DataOutput out, InputEvent e) throws Exception {
+            final MouseEvent mouseEvent = (MouseEvent) e;
             out.write(ordinal());
-            out.writeShort(e.getX()); //x
-            out.writeShort(e.getY()); //Y
+            out.writeShort(mouseEvent.getX()); //x
+            out.writeShort(mouseEvent.getY()); //Y
         }
     },
     PRESS {
@@ -38,8 +39,9 @@ public enum MouseEvents implements Event {
         }
 
         @Override
-        public void send(DataOutput out, MouseEvent e) throws Exception {
-            sendImpl(out, e);
+        public void send(DataOutput out, InputEvent e) throws Exception {
+            final MouseEvent mouseEvent = (MouseEvent) e;
+            sendImpl(out, mouseEvent);
         }
 
 
@@ -51,8 +53,9 @@ public enum MouseEvents implements Event {
         }
 
         @Override
-        public void send(DataOutput out, MouseEvent e) throws IOException {
-            sendImpl(out, e);
+        public void send(DataOutput out, InputEvent e) throws IOException {
+            final MouseEvent mouseEvent = (MouseEvent) e;
+            sendImpl(out, mouseEvent);
         }
 
     },
@@ -65,13 +68,76 @@ public enum MouseEvents implements Event {
         }
 
         @Override
-        public void send(DataOutput out, MouseEvent e) throws Exception {
+        public void send(DataOutput out, InputEvent e) throws Exception {
             out.write(ordinal());
             final int wheelRotation = ((MouseWheelEvent) e).getWheelRotation();
             System.out.println("wheelRotation = " + wheelRotation);
             out.writeInt(wheelRotation);
         }
+    },
+    KEY_PRESSED {
+        @Override
+        public void handle(DataInput input) throws Exception {
+            System.out.println("handle = " + this);
+            final int keyCode = input.readInt();
+            System.out.println("keyCode = " + keyCode);
+            ScreenService.INSTANCE.keyPressed(keyCode);
+        }
+
+        @Override
+        public void send(DataOutput out, InputEvent e) throws Exception {
+            sendKey(out, (KeyEvent) e);
+
+        }
+
+
+    },
+    KEY_RELEASED {
+        @Override
+        public void handle(DataInput input) throws Exception {
+            System.out.println("handle = " + this);
+            final int keyCode = input.readInt();
+            System.out.println("keyCode = " + keyCode);
+            ScreenService.INSTANCE.keyRealeased(keyCode);
+        }
+
+        @Override
+        public void send(DataOutput out, InputEvent e) throws Exception {
+            sendKey(out, (KeyEvent) e);
+
+        }
     };
+
+    protected void sendKey(DataOutput out, KeyEvent e) throws IOException {
+        System.out.println("send = " + this);
+        out.write(ordinal());
+        final int keyCode = e.getKeyCode();
+        System.out.println("keyCode = " + keyCode);
+        out.writeInt(keyCode);
+    }
+
+    public static KeyListener keyListener() {
+        return new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                // System.out.println("e.paramString() = " + e.paramString());
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                System.out.println("e.paramString() = " + e.paramString());
+                MouseClient.INSTANCE.send(MouseEvents.KEY_PRESSED, e);
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                System.out.println("e.paramString() = " + e.paramString());
+                MouseClient.INSTANCE.send(MouseEvents.KEY_RELEASED, e);
+            }
+        };
+
+    }
 
     protected void sendImpl(DataOutput out, MouseEvent e) throws IOException {
         out.write(ordinal());
