@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class GuiClient extends JPanel {
 
@@ -53,9 +54,9 @@ public class GuiClient extends JPanel {
         final Answer answer = SimpleClient.INSTANCE.send(command);
         final Point point = answer.getDataObj();
         System.out.println("point = " + point);
-        final double k = 0.5;
-        final double newWidth = point.getX() * k;
-        final double newHeight = point.getY() * k;
+        final double k = 2;
+        final double newWidth = point.getX() / k;
+        final double newHeight = point.getY() / k;
 
         frame.setSize((int) newWidth, (int) newHeight);
         //Create and set up the content pane.
@@ -68,7 +69,8 @@ public class GuiClient extends JPanel {
         frame.setVisible(true);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        MouseClient.INSTANCE.start("192.168.1.33", 1112);
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {

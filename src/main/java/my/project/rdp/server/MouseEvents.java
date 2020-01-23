@@ -20,8 +20,10 @@ public enum MouseEvents implements Event {
             final int y = in.readUnsignedShort();
 
             final Point point = new Point(x, y);
-            System.out.println("point = " + point);
+            System.out.println("move point accepted " + point);
             ScreenService.INSTANCE.mouseMove(point);
+            //final Point mouse = ScreenService.INSTANCE.getMouse();
+            //System.out.println("real mouse = " + mouse);
         }
 
         @Override
@@ -30,6 +32,7 @@ public enum MouseEvents implements Event {
             out.write(ordinal());
             out.writeShort(mouseEvent.getX()); //x
             out.writeShort(mouseEvent.getY()); //Y
+            System.out.println("send point = " +  "[x=" + (mouseEvent.getX() + ",y=" + mouseEvent.getY() + "]"));
         }
     },
     PRESS {
