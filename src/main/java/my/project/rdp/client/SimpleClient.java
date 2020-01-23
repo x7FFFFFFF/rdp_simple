@@ -22,6 +22,7 @@ public enum SimpleClient implements AutoCloseable {
 
     public SimpleClient start(String host, int port) throws IOException {
         System.out.println("Starting client host = " + host + " port = " + port);
+        System.out.println("getClass() = " + getClass());
         System.out.println(".");
         clientSocket = new Socket(host, port);
         out = rethrow(() -> new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream())));
