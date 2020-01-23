@@ -5,9 +5,7 @@ import my.project.rdp.client.SimpleClient;
 import my.project.rdp.services.ScreenService;
 
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -49,7 +47,7 @@ public enum MouseEvents implements Event {
     RELEASE {
         @Override
         public void handle(DataInput in) throws Exception {
-            handle(in,  ScreenService.INSTANCE::mouseRelease);
+            handle(in, ScreenService.INSTANCE::mouseRelease);
         }
 
         @Override
@@ -57,6 +55,22 @@ public enum MouseEvents implements Event {
             sendImpl(out, e);
         }
 
+    },
+    WHEEL {
+        @Override
+        public void handle(DataInput input) throws Exception {
+            final int wheel = input.readInt();
+            System.out.println("wheel = " + wheel);
+            ScreenService.INSTANCE.mouseWheel(wheel);
+        }
+
+        @Override
+        public void send(DataOutput out, MouseEvent e) throws Exception {
+            out.write(ordinal());
+            final int wheelRotation = ((MouseWheelEvent) e).getWheelRotation();
+            System.out.println("wheelRotation = " + wheelRotation);
+            out.writeInt(wheelRotation);
+        }
     };
 
     protected void sendImpl(DataOutput out, MouseEvent e) throws IOException {
@@ -117,6 +131,10 @@ public enum MouseEvents implements Event {
 
             }
         };
+    }
+
+    public static MouseWheelListener mouseWheelListener() {
+        return e -> MouseClient.INSTANCE.send(MouseEvents.WHEEL, e);
     }
 
 

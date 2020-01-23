@@ -51,6 +51,7 @@ public class SimpleClientTest {
         JLabel lbl = new JLabel();
         lbl.addMouseListener(MouseEvents.mouseListener());
         lbl.addMouseMotionListener(MouseEvents.mouseMotionListener());
+        lbl.addMouseWheelListener(MouseEvents.mouseWheelListener());
         lbl.setIcon(icon);
         //panel.add(lbl);
         frame.add(lbl);

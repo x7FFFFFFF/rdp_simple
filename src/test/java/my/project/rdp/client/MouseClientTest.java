@@ -26,6 +26,7 @@ public class MouseClientTest {
 
         frame.addMouseListener(MouseEvents.mouseListener());
         frame.addMouseMotionListener(MouseEvents.mouseMotionListener());
+        frame.addMouseWheelListener(MouseEvents.mouseWheelListener());
 
         frame.add(lbl);
         frame.setVisible(true);

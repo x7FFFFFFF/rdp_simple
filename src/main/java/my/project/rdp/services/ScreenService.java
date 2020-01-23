@@ -15,6 +15,10 @@ public enum  ScreenService {
         }
     }
 
+    public synchronized void  mouseWheel(int wheel) {
+        robot.mouseWheel(wheel);
+    }
+
     public synchronized void  mouseMove(Point point) {
         robot.mouseMove(point.x, point.y);
     }

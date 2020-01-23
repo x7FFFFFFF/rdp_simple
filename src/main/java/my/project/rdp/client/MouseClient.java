@@ -1,13 +1,9 @@
 package my.project.rdp.client;
 
-import my.project.rdp.model.Answer;
-import my.project.rdp.model.Command;
 import my.project.rdp.server.MouseEvents;
-import my.project.rdp.server.SimpleServer;
 
 import java.awt.event.MouseEvent;
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 
 import static my.project.rdp.other.Utils.rethrow;
