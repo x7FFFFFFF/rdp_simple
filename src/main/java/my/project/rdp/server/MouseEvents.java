@@ -108,6 +108,56 @@ public enum MouseEvents implements Event {
         }
     };
 
+    public static MouseListener mouseListener(double k) {
+        return new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+                MouseClient.INSTANCE.send(MouseEvents.PRESS, resize(e, k));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                MouseClient.INSTANCE.send(MouseEvents.RELEASE,  resize(e, k));
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        };
+    }
+    static MouseEvent resize(MouseEvent e, double k){
+       return new MouseEvent((Component) e.getSource(),
+               e.getID(), e.getWhen(), e.getModifiers(),(int)(e.getX()*k), (int)(e.getY()*k), e.getClickCount(), e.isPopupTrigger(), e.getButton() );
+
+    }
+
+    public static MouseMotionListener mouseMotionListener(double k) {
+        return new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                MouseClient.INSTANCE.send(MouseEvents.MOVE, resize(e, k));
+            }
+        };
+
+    }
+
     protected void sendKey(DataOutput out, KeyEvent e) throws IOException {
         System.out.println("send = " + this);
         out.write(ordinal());
