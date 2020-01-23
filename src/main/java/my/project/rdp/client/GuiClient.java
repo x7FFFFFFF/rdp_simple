@@ -16,6 +16,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static my.project.rdp.other.Utils.getArg;
+import static my.project.rdp.other.Utils.getArgInt;
+
 public class GuiClient extends JPanel {
     private static ScheduledExecutorService service = Executors.newScheduledThreadPool(1);
 
@@ -130,13 +133,12 @@ public class GuiClient extends JPanel {
     }
 
     public static void main(String[] args) throws IOException {
-        MouseClient.INSTANCE.start("192.168.1.33", 1112);
+        final String host = getArg("host");
+        SimpleClient.INSTANCE.start(host, getArgInt("p1"));
+        MouseClient.INSTANCE.start(host, getArgInt("p1"));
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Utils.rethrowVoid(GuiClient::createAndShowGUI);
-            }
-        });
+        javax.swing.SwingUtilities.invokeLater(() -> Utils.rethrowVoid(GuiClient::createAndShowGUI));
     }
+
 }

@@ -17,11 +17,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static my.project.rdp.other.Utils.getArgInt;
 import static my.project.rdp.other.Utils.rethrowVoid;
 
 public enum SimpleServer implements AutoCloseable {
-    INSTANCE(1111, ClientHandler.class),
-    MOUSE_SERVER(1112, MouseHandler.class);
+    INSTANCE(getArgInt("p1"), ClientHandler.class),
+    MOUSE_SERVER(getArgInt("p2"), MouseHandler.class);
     private final ServerSocket serverSocket;
     private final Constructor<? extends Runnable> constructor;
     private final ExecutorService executor;

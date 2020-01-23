@@ -19,7 +19,7 @@ public enum MouseClient implements AutoCloseable {
     private volatile DataInputStream in;
 
     MouseClient() {
-        clientSocket = rethrow(Socket::new);
+        //clientSocket = rethrow(Socket::new);
 
     }
 

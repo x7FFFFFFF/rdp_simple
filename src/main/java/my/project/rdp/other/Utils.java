@@ -74,4 +74,17 @@ public final class Utils {
     }
 
 
+    public static int getArgInt(String name) {
+        return Integer.parseInt(getArg(name));
+    }
+
+    public static String getArg(String name) {
+        final String host = System.getProperty(name);
+        if (host == null) {
+            throw new IllegalArgumentException("missing -D" + name);
+        }
+        return host;
+    }
+
+
 }

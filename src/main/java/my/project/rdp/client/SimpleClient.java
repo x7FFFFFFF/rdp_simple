@@ -5,25 +5,33 @@ import my.project.rdp.model.Command;
 import my.project.rdp.server.MouseEvents;
 
 import java.awt.event.MouseEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 import static my.project.rdp.other.Utils.rethrow;
 import static my.project.rdp.other.Utils.rethrowVoid;
 
 public enum SimpleClient implements AutoCloseable {
-    INSTANCE("192.168.1.33", 1111);
+    INSTANCE;
     //INSTANCE("localhost", 1111);
-    private final Socket clientSocket;
-    private final DataOutputStream out;
-    private final DataInputStream in;
+    private volatile Socket clientSocket;
+    private volatile DataOutputStream out;
+    private volatile DataInputStream in;
 
-    SimpleClient(String host, int port) {
-        clientSocket = rethrow(() -> new Socket(host, port));
-        out = rethrow(() -> new DataOutputStream(clientSocket.getOutputStream()));
+
+
+    public SimpleClient start(String host, int port) throws IOException {
+        System.out.println("Starting client host = " + host + " port = " + port);
+        System.out.println(".");
+        clientSocket = new Socket(host, port);
+        out = rethrow(() -> new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream())));
         in = rethrow(() -> new DataInputStream(
-                clientSocket.getInputStream()));
+                new BufferedInputStream(clientSocket.getInputStream())));
+        while (!clientSocket.isBound() && !clientSocket.isConnected()) {
+            System.out.print(".");
+        }
+        System.out.println("client successfuly started");
+        return this;
     }
 
 
