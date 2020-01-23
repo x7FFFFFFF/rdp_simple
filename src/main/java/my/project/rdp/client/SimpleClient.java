@@ -34,9 +34,9 @@ public enum SimpleClient implements AutoCloseable {
             answer.readObject(in);
             return answer;
         } catch (Exception e) {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
-        return null;
+        //return null;
     }
 
     @Override

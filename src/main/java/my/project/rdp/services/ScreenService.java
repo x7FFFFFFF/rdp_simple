@@ -57,4 +57,15 @@ public enum  ScreenService {
         robot.keyRelease(keyCode);
     }
 
+    public Point getScreenSize(){
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double width = screenSize.getWidth();
+        double height = screenSize.getHeight();
+        System.out.println("width = " + width);
+        System.out.println("height = " + height);
+        final Point point = new Point((int) width, (int) height);
+        System.out.println("point = " + point);
+        return point;
+    }
+
 }

@@ -29,11 +29,11 @@ public enum CommandRegistry implements CommandExecutor {
             return getAnswer(command, screenCaptureFull);
         }
     },
-    GET_MOUSE {
+    GET_SCREEN_SIZE{
         @Override
         public Answer execute(Command command) throws Exception {
-            final Point mouse = ScreenService.INSTANCE.getMouse();
-            final PointSt pointSt = new PointSt(mouse);
+            final Point screenSize = ScreenService.INSTANCE.getScreenSize();
+            final PointSt pointSt = new PointSt(screenSize);
             final ByteArrayOutputStream out = new ByteArrayOutputStream();  //TODO  - избыточно как то
             DataOutput dos = new DataOutputStream(out);
             pointSt.writeObject(dos);
@@ -41,28 +41,16 @@ public enum CommandRegistry implements CommandExecutor {
         }
 
         @Override
-        public Object decryptAnsver(byte[] data) throws Exception { //TODO  - избыточно как то
+        public Object decryptAnsver(byte[] data) throws Exception {
             final DataInputStream is = new DataInputStream(new ByteArrayInputStream(data));
             final PointSt pointSt = new PointSt();
             pointSt.readObject(is);
             return pointSt;
         }
-
-    },
-    MOUSE_MOVE {
-        @Override
-        public Answer execute(Command command) throws Exception {
-            Point point = new Point(command.getIntParam(0), command.getIntParam(1));
-            ScreenService.INSTANCE.mouseMove(point);
-            System.out.println("MOUSE_MOVE = " + point);
-            return GET_MOUSE.execute(command);
-        }
-
-        @Override
-        public Object decryptAnsver(byte[] data) throws Exception {
-            return GET_MOUSE.decryptAnsver(data);
-        }
     }
+
+
+
     ;
 
     private static Answer getAnswer(Command command, BufferedImage screenCapture) throws IOException {

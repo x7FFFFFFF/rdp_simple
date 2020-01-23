@@ -17,7 +17,7 @@ public class AnswerTest {
 
         {
 
-            Utils.checkSerializationDataIO(new Answer(1, CommandRegistry.MOUSE_MOVE));
+            //Utils.checkSerializationDataIO(new Answer(1, CommandRegistry.MOUSE_MOVE));
         }
 
     }
