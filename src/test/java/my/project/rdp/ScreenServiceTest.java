@@ -1,6 +1,7 @@
 package my.project.rdp;
 
 import my.project.rdp.services.ScreenService;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -17,6 +18,7 @@ public class ScreenServiceTest {
     private Row[] rows2 = new  Row[1000];
 
     @Test
+    @Ignore
     public void testCreateScreenCapture() throws IOException {
         final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCapture(new Rectangle(1000, 1000));
         final BufferedImage image = new BufferedImage(screenCapture.getWidth(), screenCapture.getHeight(),
