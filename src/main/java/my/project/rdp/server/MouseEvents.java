@@ -1,5 +1,6 @@
 package my.project.rdp.server;
 
+import my.project.rdp.client.GuiClient;
 import my.project.rdp.client.MouseClient;
 import my.project.rdp.client.SimpleClient;
 import my.project.rdp.services.ScreenService;
@@ -111,7 +112,7 @@ public enum MouseEvents implements Event {
         }
     };
 
-    public static MouseListener mouseListener(double k) {
+    public static MouseListener mouseListener(GuiClient.Size k) {
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -140,13 +141,14 @@ public enum MouseEvents implements Event {
             }
         };
     }
-    static MouseEvent resize(MouseEvent e, double k){
+    static MouseEvent resize(MouseEvent e, GuiClient.Size size){
+        System.out.println("before resize = " + "[x=" + e.getX() + ",y=" + e.getY() + "]");
        return new MouseEvent((Component) e.getSource(),
-               e.getID(), e.getWhen(), e.getModifiers(),(int)(e.getX()*k), (int)(e.getY()*k), e.getClickCount(), e.isPopupTrigger(), e.getButton() );
+               e.getID(), e.getWhen(), e.getModifiers(),(int)(e.getX()*size.kX), (int)(e.getY()*size.kY), e.getClickCount(), e.isPopupTrigger(), e.getButton() );
 
     }
 
-    public static MouseMotionListener mouseMotionListener(double k) {
+    public static MouseMotionListener mouseMotionListener(GuiClient.Size k) {
         return new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -209,48 +211,7 @@ public enum MouseEvents implements Event {
     }
 
 
-    public static MouseMotionListener mouseMotionListener() {
-        return new MouseMotionListener() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
 
-            }
-
-            @Override
-            public void mouseMoved(MouseEvent e) {
-                MouseClient.INSTANCE.send(MouseEvents.MOVE, e);
-            }
-        };
-    }
-
-    public static MouseListener mouseListener() {
-        return new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                MouseClient.INSTANCE.send(MouseEvents.PRESS, e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                MouseClient.INSTANCE.send(MouseEvents.RELEASE, e);
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        };
-    }
 
     public static MouseWheelListener mouseWheelListener() {
         return e -> MouseClient.INSTANCE.send(MouseEvents.WHEEL, e);
