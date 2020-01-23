@@ -17,9 +17,9 @@ public class Main {
             System.out.println(" Remote desktop ");
             System.out.println("Usage:");
             System.out.println("On remote computer:");
-            System.out.println("java -Drun=remote -Dp1=<port1> -Dp2=<port2> -jar rdp-0.1.jar my.project.rdp.Main");
+            System.out.println("java -Drun=remote -Dp1=<port1> -Dp2=<port2> -jar rdp-0.1.jar");
             System.out.println("On local computer:");
-            System.out.println("java -Drun=local -Dhost=<IPV4_REMOTE_HOST> -Dp1=<port1> -Dp2=<port2> -jar rdp-0.1.jar my.project.rdp.Main");
+            System.out.println("java -Drun=local -Dhost=<IPV4_REMOTE_HOST> -Dp1=<port1> -Dp2=<port2> -jar rdp-0.1.jar");
             return;
         } else {
             final String run = Utils.getArg("run");
