@@ -39,6 +39,7 @@ public enum SimpleClient implements AutoCloseable {
     public synchronized Answer send(Command command) throws Exception {
         try {
             command.writeObject(out);
+            out.flush();
             final Answer answer = new Answer();
             answer.readObject(in);
             return answer;

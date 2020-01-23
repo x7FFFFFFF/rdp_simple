@@ -85,6 +85,7 @@ public enum SimpleServer implements AutoCloseable {
                     command.readObject(in);
                     final Answer answer = CommandRegistry.exec(command);
                     answer.writeObject(out);
+                    out.flush();
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);//TODO error response
