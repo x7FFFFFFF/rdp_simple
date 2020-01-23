@@ -5,6 +5,7 @@ import my.project.rdp.model.Command;
 import my.project.rdp.model.Param;
 import my.project.rdp.model.PointSt;
 import my.project.rdp.server.CommandRegistry;
+import my.project.rdp.server.MouseEvents;
 import my.project.rdp.server.SimpleServer;
 
 import javax.imageio.ImageIO;
@@ -48,20 +49,8 @@ public class SimpleClientTest {
 
 
         JLabel lbl = new JLabel();
-        lbl.addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseMoved(MouseEvent e) {
-
-                //deque.offer(new Point(e.getX(), e.getY()));
-                /*rethrowVoid(() ->
-                        SimpleClient.INSTANCE.send(new Command(CommandRegistry.MOUSE_MOVE, Param
-                                .ofInt(e.getX(), e.getY())))
-                );*/
-                System.out.println("point = " + e.getX() +":"+ e.getY());
-                //rethrowVoid(() -> MouseClient.INSTANCE.send(e.getX(), e.getY()));
-                super.mouseMoved(e);
-            }
-        });
+        lbl.addMouseListener(MouseEvents.mouseListener());
+        lbl.addMouseMotionListener(MouseEvents.mouseMotionListener());
         lbl.setIcon(icon);
         //panel.add(lbl);
         frame.add(lbl);
