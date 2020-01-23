@@ -87,4 +87,15 @@ public final class Utils {
     }
 
 
+    public static boolean checkArgs(String... names) {
+        for (String name : names) {
+            final String value = System.getProperty(name);
+            if (value == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 }

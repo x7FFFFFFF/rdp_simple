@@ -9,7 +9,11 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        if ( args.length == 0) {
+        for (String arg : args) {
+            System.out.println("arg = " + arg);
+        }
+
+        if ( !Utils.checkArgs("run", "p1", "p2")) {
             System.out.println(" Remote desktop ");
             System.out.println("Usage:");
             System.out.println("On remote computer:");
