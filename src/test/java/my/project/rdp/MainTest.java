@@ -15,11 +15,18 @@ import static org.junit.Assert.*;
 public class MainTest {
 
     @Test
-    public void testRemote() {
+    public void testRemote() throws IOException {
         System.setProperty(PORT_1, "1111");
         System.setProperty(PORT_2, "1112");
         new SimpleServer(getArgInt(PORT_1), OutputHandler.class).start();
         new SimpleServer(getArgInt(PORT_2), InputHandler.class).start();
+        System.out.println("exit (0):");
+        while (true){
+            final int v = System.in.read();
+            if (v==0) {
+                System.exit(0);
+            }
+        }
     }
 
     @Test
