@@ -15,7 +15,7 @@ public class Main {
     public static final String PORT_2 = "p2";
     public static final String HOST = "host";
 
-    public static void main1(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         for (String arg : args) {
             System.out.println("arg = " + arg);
         }
@@ -38,12 +38,5 @@ public class Main {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        System.setProperty(HOST, "localhost");
-        System.setProperty(PORT_1, "1111");
-        System.setProperty(PORT_2, "1112");
-        new SimpleServer(getArgInt(PORT_1), OutputHandler.class).start();
-        new SimpleServer(getArgInt(PORT_2), InputHandler.class).start();
-        GuiClient.main(args);
-    }
+
 }
