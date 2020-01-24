@@ -1,69 +1,58 @@
 package my.project.rdp.server;
 
-import my.project.rdp.model.Answer;
-import my.project.rdp.model.Command;
-import my.project.rdp.model.PointSt;
+import my.project.rdp.client.ScreenShotQueue;
+import my.project.rdp.client.ScreenSizeQueue;
 import my.project.rdp.services.ScreenService;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInput;
+import java.io.DataOutput;
 
 public enum CommandRegistry implements CommandExecutor {
 
 
-    CREATE_SCREEN_CAPTURE {
-        @Override
-        public Answer execute(Command command) throws IOException {
-            final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCapture(
-                    new Rectangle(command.getIntParam(0), command.getIntParam(1), command.getIntParam(2),
-                            command.getIntParam(3)));
-            return getAnswer(command, screenCapture);
-        }
-    },
     CREATE_SCREEN_CAPTURE_FULL {
         @Override
-        public Answer execute(Command command) throws Exception {
-            final BufferedImage screenCaptureFull = ScreenService.INSTANCE.createScreenCaptureFull();
-            return getAnswer(command, screenCaptureFull);
+        public void handle(DataInput input) throws Exception {
+            final int length = input.readInt();
+            final byte[] data = new byte[length];
+            input.readFully(data);
+            final ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+            final BufferedImage image = ImageIO.read(inputStream);
+            ScreenShotQueue.put(image);
         }
+
+        @Override
+        public void send(DataOutput out) throws Exception {
+         /*   final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCaptureFull();
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ImageIO.write(screenCapture, "JPEG", outputStream);
+            final byte[] bytes = outputStream.toByteArray();
+            out.writeInt(bytes.length);
+            out.write(bytes);*/
+            out.write(ScreenService.INSTANCE.getScreenCaptureFull());
+        }
+
     },
     GET_SCREEN_SIZE{
         @Override
-        public Answer execute(Command command) throws Exception {
-            final Point screenSize = ScreenService.INSTANCE.getScreenSize();
-            final PointSt pointSt = new PointSt(screenSize);
-            final ByteArrayOutputStream out = new ByteArrayOutputStream();  //TODO  - избыточно как то
-            DataOutput dos = new DataOutputStream(out);
-            pointSt.writeObject(dos);
-            return new Answer(1, command.getName(), out.toByteArray());
+        public void handle(DataInput input) throws Exception {
+            final int width = input.readUnsignedShort();
+            final int height = input.readUnsignedShort();
+            ScreenSizeQueue.put(new Point(width,height));
         }
 
         @Override
-        public Object decryptAnsver(byte[] data) throws Exception {
-            final DataInputStream is = new DataInputStream(new ByteArrayInputStream(data));
-            final PointSt pointSt = new PointSt();
-            pointSt.readObject(is);
-            return pointSt;
+        public void send(DataOutput out) throws Exception {
+            final Point point = ScreenService.INSTANCE.getScreenSize();
+            out.writeShort(point.x);
+            out.writeShort(point.y);
         }
-    }
-
-
-
-    ;
-
-    private static Answer getAnswer(Command command, BufferedImage screenCapture) throws IOException {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ImageIO.write(screenCapture, "JPEG", outputStream);
-        return new Answer(1, command.getName(), outputStream.toByteArray());
-    }
-
-
-    public static Answer exec(Command command) throws Exception {
-        final CommandExecutor registry = command.getName();
-        return registry.execute(command);
-    }
+    };
 
 
 }

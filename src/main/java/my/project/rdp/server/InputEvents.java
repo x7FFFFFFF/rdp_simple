@@ -2,7 +2,7 @@ package my.project.rdp.server;
 
 import my.project.rdp.client.GuiClient;
 import my.project.rdp.client.MouseClient;
-import my.project.rdp.client.SimpleClient;
+import my.project.rdp.client.ScreenSizeQueue;
 import my.project.rdp.services.ScreenService;
 
 import java.awt.*;
@@ -12,7 +12,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.util.function.BiConsumer;
 
-public enum MouseEvents implements Event {
+public enum InputEvents implements Event {
 
     MOVE {
         @Override
@@ -112,7 +112,7 @@ public enum MouseEvents implements Event {
         }
     };
 
-    public static MouseListener mouseListener(GuiClient.Size k) {
+    public static MouseListener mouseListener(ScreenSizeQueue.Size k) {
         return new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -122,12 +122,12 @@ public enum MouseEvents implements Event {
             @Override
             public void mousePressed(MouseEvent e) {
 
-                MouseClient.INSTANCE.send(MouseEvents.PRESS, resize(e, k));
+                MouseClient.INSTANCE.send(InputEvents.PRESS, resize(e, k));
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                MouseClient.INSTANCE.send(MouseEvents.RELEASE,  resize(e, k));
+                MouseClient.INSTANCE.send(InputEvents.RELEASE, resize(e, k));
             }
 
             @Override
@@ -141,14 +141,14 @@ public enum MouseEvents implements Event {
             }
         };
     }
-    static MouseEvent resize(MouseEvent e, GuiClient.Size size){
+    static MouseEvent resize(MouseEvent e, ScreenSizeQueue.Size size){
         System.out.println("before resize = " + "[x=" + e.getX() + ",y=" + e.getY() + "]");
        return new MouseEvent((Component) e.getSource(),
                e.getID(), e.getWhen(), e.getModifiers(),(int)(e.getX()*size.kX), (int)(e.getY()*size.kY), e.getClickCount(), e.isPopupTrigger(), e.getButton() );
 
     }
 
-    public static MouseMotionListener mouseMotionListener(GuiClient.Size k) {
+    public static MouseMotionListener mouseMotionListener(ScreenSizeQueue.Size k) {
         return new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -157,7 +157,7 @@ public enum MouseEvents implements Event {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                MouseClient.INSTANCE.send(MouseEvents.MOVE, resize(e, k));
+                MouseClient.INSTANCE.send(InputEvents.MOVE, resize(e, k));
             }
         };
 
@@ -181,14 +181,14 @@ public enum MouseEvents implements Event {
             @Override
             public void keyPressed(KeyEvent e) {
                 System.out.println("e.paramString() = " + e.paramString());
-                MouseClient.INSTANCE.send(MouseEvents.KEY_PRESSED, e);
+                MouseClient.INSTANCE.send(InputEvents.KEY_PRESSED, e);
 
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
                 System.out.println("e.paramString() = " + e.paramString());
-                MouseClient.INSTANCE.send(MouseEvents.KEY_RELEASED, e);
+                MouseClient.INSTANCE.send(InputEvents.KEY_RELEASED, e);
             }
         };
 
@@ -214,7 +214,7 @@ public enum MouseEvents implements Event {
 
 
     public static MouseWheelListener mouseWheelListener() {
-        return e -> MouseClient.INSTANCE.send(MouseEvents.WHEEL, e);
+        return e -> MouseClient.INSTANCE.send(InputEvents.WHEEL, e);
     }
 
 

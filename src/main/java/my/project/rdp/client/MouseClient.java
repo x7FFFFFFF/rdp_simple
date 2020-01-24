@@ -1,9 +1,8 @@
 package my.project.rdp.client;
 
-import my.project.rdp.server.MouseEvents;
+import my.project.rdp.server.InputEvents;
 
 import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
 import java.io.*;
 import java.net.Socket;
 
@@ -39,7 +38,7 @@ public enum MouseClient implements AutoCloseable {
     }
 
 
-    public synchronized void send(MouseEvents mouseEvents, InputEvent evt) {
+    public synchronized void send(InputEvents mouseEvents, InputEvent evt) {
         try {
             mouseEvents.send(out, evt);
             out.flush();
@@ -48,14 +47,6 @@ public enum MouseClient implements AutoCloseable {
         }
     }
 
-/*    public void send(int x, int y) throws Exception {
-        try {
-            MouseEvents.MOVE.send(out, x, y);
-            out.flush();
-        } catch (Exception e) {
-            e.printStackTrace(); //todo
-        }
-    }*/
 
     @Override
     public void close() {

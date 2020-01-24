@@ -1,12 +1,10 @@
 package my.project.rdp.server;
 
-import my.project.rdp.model.Answer;
-import my.project.rdp.model.Command;
+import java.io.DataInput;
+import java.io.DataOutput;
 
 public interface CommandExecutor {
-    Answer execute(Command  command) throws Exception;
-    default Object decryptAnsver(byte[] data) throws Exception {
-        return data;
-    }
+    void handle(DataInput input) throws Exception;
+    void send(DataOutput out)  throws Exception;
 
 }

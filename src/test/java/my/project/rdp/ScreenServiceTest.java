@@ -8,6 +8,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -16,6 +18,46 @@ public class ScreenServiceTest {
 
     private Row[] rows1 = new  Row[1000];
     private Row[] rows2 = new  Row[1000];
+
+
+    private static class Timer {
+        final long start;
+        private final String name;
+
+        public Timer(String name) {
+            this.name = name;
+            this.start =  System.currentTimeMillis();
+        }
+
+        public  void stop(){
+            System.out.println(name+" " + (System.currentTimeMillis()-start));
+        }
+    }
+
+    @Test
+    @Ignore
+    public void test2() throws IOException {
+        for (int i = 0; i < 1000; i++) {
+            final Timer timer = new Timer("screenCapture");
+            final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCaptureFull();
+            timer.stop();
+
+            final Timer timer1 = new Timer("outputStream");
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ImageIO.write(screenCapture, "JPEG", outputStream);
+            final byte[] bytes = outputStream.toByteArray();
+            timer1.stop();
+
+            final Timer timer2 = new Timer("inputStream");
+            final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+            final BufferedImage image = ImageIO.read(inputStream);
+            timer2.stop();
+
+        }
+
+
+
+    }
 
     @Test
     @Ignore
