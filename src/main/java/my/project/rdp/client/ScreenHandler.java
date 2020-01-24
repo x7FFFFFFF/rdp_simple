@@ -31,7 +31,7 @@ public class ScreenHandler implements Runnable {
                 System.out.println("MouseEvents = " + enumOpt.get());
                 enumOpt.get().handle(in);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             throw new RuntimeException(e);//TODO error response
         } finally {
             rethrowVoid(clientSocket::close);

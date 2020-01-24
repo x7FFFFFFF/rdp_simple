@@ -20,6 +20,10 @@ public class MainTest {
         System.setProperty(PORT_2, "1112");
         new SimpleServer(getArgInt(PORT_1), OutputHandler.class).start();
         new SimpleServer(getArgInt(PORT_2), InputHandler.class).start();
+        waitFor();
+    }
+
+    private void waitFor() throws IOException {
         System.out.println("exit (0):");
         while (true){
             final int v = System.in.read();
@@ -36,6 +40,7 @@ public class MainTest {
         System.setProperty(PORT_2, "1112");
 
         GuiClient.main(new String[]{});
+        waitFor();
     }
 
     public static void main1(String[] args) throws IOException {
