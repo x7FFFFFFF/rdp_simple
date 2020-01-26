@@ -4,8 +4,12 @@ import my.project.rdp.client.GuiClient;
 import my.project.rdp.server.InputHandler;
 import my.project.rdp.server.OutputHandler;
 import my.project.rdp.server.SimpleServer;
+import my.project.rdp.services.ScreenService;
 import org.junit.Test;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import static my.project.rdp.Main.*;
@@ -43,8 +47,11 @@ public class MainTest {
         waitFor();
     }
 
-    public static void main1(String[] args) throws IOException {
-
+    @Test
+    public void testImage() throws IOException {
+        final int[] pixels = ScreenService.INSTANCE.getScreenCaptureFull();
+        final BufferedImage image = ScreenService.INSTANCE.getScreenCaptureFull(pixels);
+        ImageIO.write(image, "JPEG", new File("C:\\Users\\Мария\\Documents\\test.jpg"));
     }
 
 }
