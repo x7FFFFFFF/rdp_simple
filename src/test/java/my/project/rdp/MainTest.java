@@ -35,7 +35,7 @@ public class MainTest {
 
     @Test
     public void testLocal() throws IOException {
-        System.setProperty(HOST, "192.168.1.33");
+        System.setProperty(HOST, "localhost");
         System.setProperty(PORT_1, "1111");
         System.setProperty(PORT_2, "1112");
 

@@ -19,31 +19,38 @@ public enum CommandRegistry implements CommandExecutor {
         @Override
         public void handle(DataInput input) throws Exception {
             final int length = input.readInt();
-            final byte[] data = new byte[length];
-            input.readFully(data);
-            final ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
-            final BufferedImage image = ImageIO.read(inputStream);
+            final int[] data = new int[length];
+            for (int i = 0; i < length; i++) {
+                 data[i]= input.readInt();
+            }
+            final BufferedImage image = ScreenService.INSTANCE.getScreenCaptureFull(data);
             ScreenShotQueue.put(image);
         }
 
         @Override
         public void send(DataOutput out) throws Exception {
-         /*   final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCaptureFull();
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ImageIO.write(screenCapture, "JPEG", outputStream);
-            final byte[] bytes = outputStream.toByteArray();
-            out.writeInt(bytes.length);
-            out.write(bytes);*/
-            out.write(ScreenService.INSTANCE.getScreenCaptureFull());
+            final int[] rgb = ScreenService.INSTANCE.getScreenCaptureFull();
+            //final int resLen = rgb.length * 4;
+            final int length = rgb.length;
+            /*final byte[] res = new byte[length];
+            for (int i = 0; i < res.length; i++) {
+              res[i] = (byte)rgb[i];
+            }*/
+
+            out.writeInt(length);
+           // out.write(res);
+            for (int i = 0; i < length; i++) {
+                out.writeInt(i);
+            }
         }
 
     },
-    GET_SCREEN_SIZE{
+    GET_SCREEN_SIZE {
         @Override
         public void handle(DataInput input) throws Exception {
             final int width = input.readUnsignedShort();
             final int height = input.readUnsignedShort();
-            ScreenSizeQueue.put(new Point(width,height));
+            ScreenSizeQueue.put(new Point(width, height));
         }
 
         @Override

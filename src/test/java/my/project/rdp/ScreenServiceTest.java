@@ -34,57 +34,7 @@ public class ScreenServiceTest {
         }
     }
 
-    @Test
-    @Ignore
-    public void test2() throws IOException {
-        for (int i = 0; i < 1000; i++) {
-            final Timer timer = new Timer("screenCapture");
-            final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCaptureFull();
-            timer.stop();
 
-            final Timer timer1 = new Timer("outputStream");
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            ImageIO.write(screenCapture, "JPEG", outputStream);
-            final byte[] bytes = outputStream.toByteArray();
-            timer1.stop();
-
-            final Timer timer2 = new Timer("inputStream");
-            final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-            final BufferedImage image = ImageIO.read(inputStream);
-            timer2.stop();
-
-        }
-
-
-
-    }
-
-    @Test
-    @Ignore
-    public void testCreateScreenCapture() throws IOException {
-        final BufferedImage screenCapture = ScreenService.INSTANCE.createScreenCapture(new Rectangle(1000, 1000));
-        final BufferedImage image = new BufferedImage(screenCapture.getWidth(), screenCapture.getHeight(),
-                                                      screenCapture.getType());
-        //int[] rgb = new int[screenCapture.getHeight()*screenCapture.getWidth()];
-        //screenCapture.getRGB(0, 0, screenCapture.getWidth(), screenCapture.getHeight(), rgb, 0, 1);
-        //image.setRGB(0,0, screenCapture.getWidth(), screenCapture.getHeight(), rgb, 0,1);
-        //screenCapture.copyData(image.getRaster());
-        final int[][] rastr =copyData(screenCapture.getRaster(), image.getRaster());//getRastr(screenCapture.getRaster());
-        setRastr(rastr, image.getRaster());
-        // final int[][] ints = copyData(screenCapture.getRaster(), image.getRaster());
-        // final int[][] rastr = getRastr(screenCapture.getRaster());
-/*        for (int i = 0; i < ints.length; i++) {
-            int[] ints1 = ints[i];
-            int[] ints2 = rastr[i];
-            if (! Arrays.equals(ints1, ints2)){
-                throw new IllegalArgumentException();
-            }
-            System.out.println("Arrays.equals(ints1, ints2) = " + Arrays.equals(ints1, ints2));
-
-        }*/
-        ImageIO.write(image, "JPEG", new File("/tmp/screen555.jpg"));
-
-    }
 
     public int[][] getRastr(WritableRaster raster) {
         int width = raster.getWidth();

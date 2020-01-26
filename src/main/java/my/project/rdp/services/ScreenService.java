@@ -1,61 +1,35 @@
 package my.project.rdp.services;
 
 import my.project.rdp.other.DefaultThreadFactory;
+import sun.awt.image.SunWritableRaster;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
+import java.awt.peer.RobotPeer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.concurrent.*;
 
 public enum ScreenService {
     INSTANCE;
-    private final Robot robot;
-    private final ScheduledExecutorService executorService = Executors
-        .newScheduledThreadPool(2, new DefaultThreadFactory("ScreenService"));
-    private final BlockingQueue<byte[]> screnShotsQueue = new ArrayBlockingQueue<>(100);
+    private final RobotPeer robot;
+    private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    private final Rectangle bounds = new Rectangle(screenSize.width, screenSize.height);
+    private final DirectColorModel screenCapCM = new DirectColorModel(24,
+            /* red mask */    0x00FF0000,
+            /* green mask */  0x0000FF00,
+            /* blue mask */   0x000000FF);
 
     ScreenService() {
-        try {
-            robot = new Robot();
-            executorService.scheduleWithFixedDelay(new ScreenShotRunnable(), 0, 100, TimeUnit.MILLISECONDS);
-        } catch (AWTException e) {
-            throw new RuntimeException(e);
-        }
+        robot = RobotPeerImpl.INSTANCE;
     }
 
-    private class ScreenShotRunnable implements Runnable {
-        @Override
-        public void run() {
-            final BufferedImage captureFull = createScreenCaptureFull();
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            try {
-                ImageIO.write(captureFull, "JPEG", outputStream);
-                final byte[] bytes = outputStream.toByteArray();
-                final ByteArrayOutputStream out = new ByteArrayOutputStream();
-                final int length = bytes.length;
-                writeInt(out, length);
-                out.write(bytes);
-                screnShotsQueue.put(out.toByteArray());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private void writeInt(ByteArrayOutputStream out, int length) {
-            out.write((length >>> 24) & 0xFF);
-            out.write((length >>> 16) & 0xFF);
-            out.write((length >>>  8) & 0xFF);
-            out.write((length >>>  0) & 0xFF);
-        }
-    }
-
-    public synchronized void mouseWheel(int wheel) {
+    public void mouseWheel(int wheel) {
         robot.mouseWheel(wheel);
     }
 
-    public synchronized void mouseMove(Point point) {
+    public void mouseMove(Point point) {
         robot.mouseMove(point.x, point.y);
     }
 
@@ -69,30 +43,34 @@ public enum ScreenService {
         robot.mouseRelease(buttons);
     }
 
-    public synchronized Point getMouse() {
+    public Point getMouse() {
         return MouseInfo.getPointerInfo().getLocation();
     }
 
-    public byte[] getScreenCaptureFull() throws InterruptedException {// synchronized ?
-        return screnShotsQueue.take();
+    public int[] getScreenCaptureFull() {
+        Toolkit.getDefaultToolkit().sync();
+        return robot.getRGBPixels(bounds);
     }
 
-    public synchronized BufferedImage createScreenCaptureFull() {
-        //size of the screen
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        return robot
-            .createScreenCapture(new Rectangle(0, 0, (int) screenSize.getWidth(), (int) screenSize.getHeight()));
+    public BufferedImage getScreenCaptureFull(int[] pixels) {
+        final DataBufferInt bufferInt = new DataBufferInt(pixels, pixels.length);
+        final int[] bandmasks = new int[3];
+        bandmasks[0] = screenCapCM.getRedMask();
+        bandmasks[1] = screenCapCM.getGreenMask();
+        bandmasks[2] = screenCapCM.getBlueMask();
+        final WritableRaster raster = Raster.createPackedRaster(bufferInt, screenSize.width, screenSize.height, screenSize.width, bandmasks, null);
+        SunWritableRaster.makeTrackable(bufferInt);
+       return  new BufferedImage(screenCapCM, raster, false, null);
     }
 
-    public synchronized BufferedImage createScreenCapture(Rectangle screenRect) {
-        return robot.createScreenCapture(screenRect);
-    }
 
-    public synchronized void keyPressed(int keyCode) {
+
+
+    public void keyPressed(int keyCode) {
         robot.keyPress(keyCode);
     }
 
-    public synchronized void keyRealeased(int keyCode) {
+    public void keyRealeased(int keyCode) {
         robot.keyRelease(keyCode);
     }
 
