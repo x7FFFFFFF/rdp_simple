@@ -40,7 +40,7 @@ public enum CommandRegistry implements CommandExecutor {
             out.writeInt(length);
            // out.write(res);
             for (int i = 0; i < length; i++) {
-                out.writeInt(i);
+                out.writeInt(rgb[i]);
             }
         }
 

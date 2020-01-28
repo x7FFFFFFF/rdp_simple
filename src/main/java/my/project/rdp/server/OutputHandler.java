@@ -1,5 +1,7 @@
 package my.project.rdp.server;
 
+import my.project.rdp.other.OutStream;
+
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -15,7 +17,7 @@ public class OutputHandler implements Runnable{
     }
     @Override
     public void run() {
-        try (final DataOutputStream out = new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()))) {
+        try (final DataOutputStream out = OutStream.of(clientSocket).buffered().data().get()) {
             send(CommandRegistry.GET_SCREEN_SIZE, out);
             while (!Thread.currentThread().isInterrupted()) {
                 send(CommandRegistry.CREATE_SCREEN_CAPTURE_FULL, out);

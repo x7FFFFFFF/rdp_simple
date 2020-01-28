@@ -1,5 +1,6 @@
 package my.project.rdp.client;
 
+import my.project.rdp.other.OutStream;
 import my.project.rdp.server.InputEvents;
 
 import java.awt.event.InputEvent;
@@ -27,7 +28,7 @@ public enum MouseClient implements AutoCloseable {
         System.out.println("getClass() = " + getClass());
         System.out.println(".");
         clientSocket = new Socket(host, port);
-        out = rethrow(() -> new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream())));
+        out = OutStream.of(clientSocket).buffered().data().get(); // rethrow(() -> new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream())));
         in = rethrow(() -> new DataInputStream(
                 new BufferedInputStream(clientSocket.getInputStream())));
         while (!clientSocket.isBound() && !clientSocket.isConnected()) {

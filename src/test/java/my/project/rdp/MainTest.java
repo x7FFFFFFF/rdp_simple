@@ -1,16 +1,18 @@
 package my.project.rdp;
 
 import my.project.rdp.client.GuiClient;
+import my.project.rdp.client.ScreenShotQueue;
+import my.project.rdp.server.CommandRegistry;
 import my.project.rdp.server.InputHandler;
 import my.project.rdp.server.OutputHandler;
 import my.project.rdp.server.SimpleServer;
 import my.project.rdp.services.ScreenService;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import static my.project.rdp.Main.*;
 import static my.project.rdp.other.Utils.getArgInt;
@@ -48,10 +50,17 @@ public class MainTest {
     }
 
     @Test
-    public void testImage() throws IOException {
-        final int[] pixels = ScreenService.INSTANCE.getScreenCaptureFull();
-        final BufferedImage image = ScreenService.INSTANCE.getScreenCaptureFull(pixels);
-        ImageIO.write(image, "JPEG", new File("C:\\Users\\Мария\\Documents\\test.jpg"));
+    @Ignore
+    public void testImage() throws Exception {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
+        CommandRegistry.CREATE_SCREEN_CAPTURE_FULL.send(dataOutputStream);
+        dataOutputStream.flush();
+        final ByteArrayInputStream is = new ByteArrayInputStream(outputStream.toByteArray());
+        final DataInputStream dataInputStream = new DataInputStream(is);
+        CommandRegistry.CREATE_SCREEN_CAPTURE_FULL.handle(dataInputStream);
+        final BufferedImage image = ScreenShotQueue.take();
+        ImageIO.write(image, "JPEG", new File("/tmp/test-screen.jpg"));
     }
 
 }
