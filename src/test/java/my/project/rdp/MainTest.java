@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 public class MainTest {
 
     @Test
+    @Ignore
     public void testRemote() throws IOException {
         System.setProperty(PORT_1, "1111");
         System.setProperty(PORT_2, "1112");
@@ -40,8 +41,9 @@ public class MainTest {
     }
 
     @Test
+    @Ignore
     public void testLocal() throws IOException {
-        System.setProperty(HOST, "localhost");
+        System.setProperty(HOST, "192.168.1.33");
         System.setProperty(PORT_1, "1111");
         System.setProperty(PORT_2, "1112");
 

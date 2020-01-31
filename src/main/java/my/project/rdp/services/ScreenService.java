@@ -1,15 +1,10 @@
 package my.project.rdp.services;
 
-import my.project.rdp.other.DefaultThreadFactory;
 import sun.awt.image.SunWritableRaster;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.peer.RobotPeer;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.concurrent.*;
 
 public enum ScreenService {
     INSTANCE;
