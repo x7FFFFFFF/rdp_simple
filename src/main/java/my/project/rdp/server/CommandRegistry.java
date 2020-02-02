@@ -18,12 +18,14 @@ public enum CommandRegistry implements CommandExecutor {
     CREATE_SCREEN_CAPTURE_FULL {
         @Override
         public void handle(DataInput input) throws Exception {
+            final int width = input.readInt();
+            final int height = input.readInt();
             final int length = input.readInt();
             final int[] data = new int[length];
             for (int i = 0; i < length; i++) {
                  data[i]= input.readInt();
             }
-            final BufferedImage image = ScreenService.INSTANCE.getScreenCaptureFull(data);
+            final BufferedImage image = ScreenService.INSTANCE.getScreenCaptureFull(width, height, data);
             ScreenShotQueue.put(image);
         }
 
@@ -32,11 +34,9 @@ public enum CommandRegistry implements CommandExecutor {
             final int[] rgb = ScreenService.INSTANCE.getScreenCaptureFull();
             //final int resLen = rgb.length * 4;
             final int length = rgb.length;
-            /*final byte[] res = new byte[length];
-            for (int i = 0; i < res.length; i++) {
-              res[i] = (byte)rgb[i];
-            }*/
-
+            final Point screenSize = ScreenService.INSTANCE.getScreenSize();
+            out.writeInt(screenSize.x);
+            out.writeInt(screenSize.y);
             out.writeInt(length);
            // out.write(res);
             for (int i = 0; i < length; i++) {

@@ -9,7 +9,7 @@ import java.awt.peer.RobotPeer;
 public enum ScreenService {
     INSTANCE;
     private final RobotPeer robot;
-    private final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     private final Rectangle bounds = new Rectangle(screenSize.width, screenSize.height);
     private final DirectColorModel screenCapCM = new DirectColorModel(24,
             /* red mask */    0x00FF0000,
@@ -47,13 +47,13 @@ public enum ScreenService {
         return robot.getRGBPixels(bounds);
     }
 
-    public BufferedImage getScreenCaptureFull(int[] pixels) {
+    public BufferedImage getScreenCaptureFull(int width, int height, int[] pixels) {
         final DataBufferInt bufferInt = new DataBufferInt(pixels, pixels.length);
         final int[] bandmasks = new int[3];
         bandmasks[0] = screenCapCM.getRedMask();
         bandmasks[1] = screenCapCM.getGreenMask();
         bandmasks[2] = screenCapCM.getBlueMask();
-        final WritableRaster raster = Raster.createPackedRaster(bufferInt, screenSize.width, screenSize.height, screenSize.width, bandmasks, null);
+        final WritableRaster raster = Raster.createPackedRaster(bufferInt, width, height, width, bandmasks, null);
         SunWritableRaster.makeTrackable(bufferInt);
        return  new BufferedImage(screenCapCM, raster, false, null);
     }
