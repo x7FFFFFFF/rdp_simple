@@ -2,7 +2,8 @@ package my.project.rdp.client;
 
 import my.project.rdp.other.Utils;
 import my.project.rdp.server.CommandRegistry;
-import my.project.rdp.server.InputEvents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -13,6 +14,7 @@ import static my.project.rdp.other.Utils.rethrowVoid;
 
 public class ScreenHandler implements Runnable {
     private final Socket clientSocket;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ScreenHandler.class);
 
     public ScreenHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -32,6 +34,7 @@ public class ScreenHandler implements Runnable {
                 enumOpt.get().handle(in);
             }
         } catch (Throwable e) {
+            LOGGER.error("ScreenHandler", e);
             throw new RuntimeException(e);//TODO error response
         } finally {
             rethrowVoid(clientSocket::close);

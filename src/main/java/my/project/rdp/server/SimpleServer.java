@@ -1,6 +1,8 @@
 package my.project.rdp.server;
 
 import my.project.rdp.other.DefaultThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.net.ServerSocket;
@@ -23,6 +25,7 @@ public class SimpleServer implements AutoCloseable {
     private final AtomicBoolean started = new AtomicBoolean(false);
     private final int port;
     private final Class<? extends Runnable> clientHandlerClass;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServer.class);
 
     public SimpleServer(int port, Class<? extends Runnable> clientHandlerClass) {
         this.port = port;
@@ -32,6 +35,7 @@ public class SimpleServer implements AutoCloseable {
             serverSocket = new ServerSocket(port);
             executor = Executors.newFixedThreadPool(2, new DefaultThreadFactory("SimpleServer"));
         } catch (Exception e) {
+            LOGGER.error("SimpleServer", e);
             throw new RuntimeException(e);
         }
     }

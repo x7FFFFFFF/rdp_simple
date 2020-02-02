@@ -2,6 +2,8 @@ package my.project.rdp.client;
 
 import my.project.rdp.other.OutStream;
 import my.project.rdp.server.InputEvents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.event.InputEvent;
 import java.io.*;
@@ -11,13 +13,14 @@ import static my.project.rdp.other.Utils.rethrow;
 import static my.project.rdp.other.Utils.rethrowVoid;
 
 public enum MouseClient implements AutoCloseable {
+
     // INSTANCE("192.168.1.33", 1112);
     //INSTANCE("localhost", 1111);
     INSTANCE;
     private volatile Socket clientSocket;
     private volatile DataOutputStream out;
     private volatile DataInputStream in;
-
+    private  final Logger logger = LoggerFactory.getLogger(MouseClient.class);
     MouseClient() {
         //clientSocket = rethrow(Socket::new);
 
@@ -44,6 +47,7 @@ public enum MouseClient implements AutoCloseable {
             mouseEvents.send(out, evt);
             out.flush();
         } catch (Exception e) {
+            logger.error("MouseClient.send", e);
             throw new RuntimeException(e);
         }
     }

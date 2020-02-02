@@ -3,6 +3,9 @@ package my.project.rdp.client;
 import my.project.rdp.other.DefaultThreadFactory;
 import my.project.rdp.other.Utils;
 import my.project.rdp.server.InputEvents;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,12 +15,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+
 import static my.project.rdp.Main.*;
 import static my.project.rdp.client.ScreenSizeQueue.getScreenSize;
 import static my.project.rdp.other.Utils.getArg;
 import static my.project.rdp.other.Utils.getArgInt;
 
 public class GuiClient extends JPanel {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GuiClient.class);
     private static ScheduledExecutorService service = Executors
         .newScheduledThreadPool(2, new DefaultThreadFactory("GuiClient"));
 
@@ -56,6 +61,7 @@ public class GuiClient extends JPanel {
                         label.repaint();
                     });
                 } catch (Exception e) {
+                    LOGGER.error("ReloadScreen error", e);
                     throw new RuntimeException(e);
                 }
 

@@ -1,11 +1,11 @@
 package my.project.rdp.server;
 
 import my.project.rdp.other.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.Optional;
 
@@ -13,6 +13,7 @@ import static my.project.rdp.other.Utils.rethrowVoid;
 
 public class InputHandler implements Runnable {
     private final Socket clientSocket;
+    private static final Logger LOGGER = LoggerFactory.getLogger(InputHandler.class);
 
     public InputHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -32,6 +33,7 @@ public class InputHandler implements Runnable {
                 enumOpt.get().handle(in);
             }
         } catch (Exception e) {
+            LOGGER.error("LOGGER", e);
             throw new RuntimeException(e);//TODO error response
         } finally {
             rethrowVoid(clientSocket::close);
