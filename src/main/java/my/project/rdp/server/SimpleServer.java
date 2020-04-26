@@ -41,13 +41,14 @@ public class SimpleServer implements AutoCloseable {
     }
 
     public SimpleServer start() {
-        System.out.print("Starting server port=" + port);
+        System.out.println("Starting server port=" + port);
         System.out.println("clientHandlerClass = " + clientHandlerClass);
         futureList.add(executor.submit(new ServerMain()));
         while (!started.get()) {
             System.out.print(".");
         }
-        System.out.print("server started");
+        System.out.println();
+        System.out.println("server started");
         return this;
     }
 
